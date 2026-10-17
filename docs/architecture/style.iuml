@@ -1,0 +1,10 @@
+!pragma layout smetana
+
+skinparam classStereotypeFontSize 16
+skinparam classAttributeIconSize 0
+
+<style>
+root {
+  FontSize 16
+}
+</style>

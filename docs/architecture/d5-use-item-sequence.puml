@@ -1,0 +1,26 @@
+@startuml d5-use-item-sequence
+
+!include style.iuml
+
+title Goose Patrol: D5 using an item
+caption v0.2.0 draft, 17 Oct 2026
+hide footbox
+
+participant ":InputHandler" as input
+participant ":GameSession" as session
+participant ":Inventory" as inventory
+participant "item:Item" as item
+participant ":Counters" as counters
+
+[-> input : keyDown(NUM_1)
+input -> session : useItem(1)
+opt state = PLAYING
+  session -> inventory : use(1)
+  inventory --> session : item, or none
+  opt an item came back
+    session -> item : apply(this)
+    session -> counters : itemUsed()
+  end
+end
+
+@enduml

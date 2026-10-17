@@ -1,0 +1,17 @@
+@startuml d3-run-states
+
+!include style.iuml
+
+
+title Goose Patrol: D3 run states
+caption v0.2.0 draft, 17 Oct 2026
+[*] --> READY
+READY : entry / show start prompt
+READY --> PLAYING : start()
+PLAYING : do / count down the clock
+PLAYING --> PAUSED : togglePause()
+PAUSED : entry / show paused message
+PAUSED --> PLAYING : togglePause()
+PLAYING --> ENDED : when(timeLeft = 0)
+ENDED : entry / show end screen
+@enduml

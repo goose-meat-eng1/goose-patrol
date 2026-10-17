@@ -1,0 +1,59 @@
+@startuml d1-package-overview
+
+!include style.iuml
+title Goose Patrol: D1 package overview
+caption v0.2.0 draft, 17 Oct 2026\nDashed arrow: uses. Dashed arrow with a hollow triangle: implements.
+
+' D1 shows class names only
+hide members
+hide circle
+
+' D1 shows what the parts are and which way they depend
+
+package "com.goosepatrol" as root {
+  class GoosePatrolGame
+
+  package "lwjgl3" as lwjgl3 {
+    class Lwjgl3Launcher
+  }
+
+  package "view" as view {
+    class GameScreen
+    class WorldRenderer
+    class Hud
+    class EndScreen
+    class CueService
+  }
+
+  package "input" as input {
+    class InputHandler
+  }
+
+  package "model" as model {
+    interface CueListener <<interface>>
+    class GameSession
+    class GameSetup
+  }
+}
+
+' Layout hints only: put view's five classes in two rows, so the diagram fits a 16 cm column at 10 pt
+GameScreen -[hidden]right- WorldRenderer
+WorldRenderer -[hidden]right- Hud
+GameScreen -[hidden]down- EndScreen
+WorldRenderer -[hidden]down- CueService
+
+' Each arrow ends at the class that is used. Every dashed arrow is a <<use>> dependency,
+' so only the one exception, <<create>>, is labelled; the caption explains the rest.
+Lwjgl3Launcher ..> GoosePatrolGame : <<create>>
+GoosePatrolGame ..> view
+GoosePatrolGame ..> input
+GoosePatrolGame ..> GameSetup
+view ..> GameSession
+InputHandler ..> GameSession
+CueService ..|> CueListener
+
+note bottom of model
+  Plain Java, no libGDX imports:
+  JUnit tests it without a window.
+end note
+@enduml

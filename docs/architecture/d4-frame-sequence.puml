@@ -1,0 +1,28 @@
+@startuml d4-frame-sequence
+
+!include style.iuml
+title Goose Patrol: D4 one frame of play
+caption v0.2.0 draft, 17 Oct 2026
+hide footbox
+
+participant ":GameSession" as session
+participant ":GameClock" as clock
+participant ":HiddenEvent" as event
+participant ":Counters" as counters
+participant ":CueListener" as cues
+
+[-> session : update(delta)
+opt state = PLAYING
+  session -> clock : tick(delta)
+  loop for each hidden event
+    session -> event : check(this)
+    event --> session : fired, story
+
+    opt fired
+      session -> counters : eventTriggered()
+      session -> cues : cue(story)
+    end
+  end
+end
+
+@enduml

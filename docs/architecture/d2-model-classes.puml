@@ -1,0 +1,68 @@
+@startuml d2-model-classes
+
+!include style.iuml
+title Goose Patrol: D2 model classes
+caption v0.2.0 draft, 17 Oct 2026
+hide circle
+hide empty members
+
+class GameSession {
+  +start()
+  +togglePause() 
+  +update(delta: float) 
+  +useItem(slot: int)
+}
+
+enum RunState <<enumeration>> {
+  READY
+  PLAYING
+  PAUSED
+  ENDED
+}
+
+' Declared in this order on purpose: the order moves boxes left and right, and this one keeps D2 under 720 px.
+class GameClock
+class Player
+class CampusMap
+class Counters
+class GameSetup
+interface CueListener <<interface>>
+class Inventory
+
+interface Item <<interface>> {
+  +apply(session: GameSession)
+}
+
+abstract class HiddenEvent
+
+interface EventTrigger <<interface>> {
+  +isMet(s: GameSession): boolean
+}
+
+class ZoneTrigger
+class Goose
+class BreadDispenser
+
+RunState "1" <-- GameSession
+GameClock "1" --* GameSession
+Player "1" --* GameSession
+CampusMap "1" --* GameSession
+Counters "1" --* GameSession
+
+GameSetup .right.> GameSession : <<create>>
+GameSession -right-> "1" CueListener
+
+GameSession *-- "1" Inventory
+GameSession *-- "0..*" HiddenEvent
+GameSession *-- "0..*" Goose
+GameSession *-- "1" BreadDispenser
+Inventory *-- "0..*" Item
+HiddenEvent *-- "1" EventTrigger
+EventTrigger <|.. ZoneTrigger
+
+note bottom of Item : A2 adds pickup items
+
+note right of ZoneTrigger : A2 adds GooseFedTrigger
+
+
+@enduml
