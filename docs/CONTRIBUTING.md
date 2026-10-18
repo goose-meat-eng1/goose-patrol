@@ -23,7 +23,13 @@
 
 ## every piece of work
 
-1. choose a Github issue and assign yourself to it.
+1. choose a Github issue and assign yourself to it. Working   directory in the repo and you have to install Github 
+
+   ```
+   gh issue create --title "..." --body "..." --assignee @me
+   ```
+   Or create using [Github](https://github.com/goose-meat-eng1/goose-patrol/issues/1)
+   
 2. update  `main`and make branch named after the issuezs requirment ID (from our requirements document, Req1):
    ```
    git switch main
