@@ -1,0 +1,44 @@
+# How to work on Goose Patrol
+
+## Once
+
+1. Accept the the github invitation it expiers after 7 days.
+2. Install Java 17
+3. Tell Git Who you are. use an email on your Github account, so commits count as yours:
+
+   ```
+   git config --global user.name "Your Name"
+   git config --global user.email "you@york.ac.uk"
+   ```
+
+4. Clone the repo, then that it builds and runs. on windows use `gradlew.bat`    instead of `./gradlew`.
+   The first build downloads Gradle and the Java it runs on, so it needs internet.
+
+   ```
+   git clone https://github.com/goose-meat-eng1/goose-patrol.git
+   cd goose-patrol
+   ./gradlew build
+   ./gradlew lwjgl3:run
+   ```
+
+## every piece of work
+
+1. choose a Github issue and assign yourself to it.
+2. update  `main`and make branch named after the issuezs requirment ID (from our requirements document, Req1):
+   ```
+   git switch main
+   git pull
+   git switch -c FR_PAUSE-pause-key
+   ```
+
+3. Commit in small steps. start each message with ID, for example `FR_PAUSE: pause key toggles the run` 
+4. Push the branch: `git push -u origin FR_PAUSE-pause-key`
+5. Open a pull request to `main` write `closes #N` whith the issue number in the description and ask for review.
+6 Once it's aproved, click **Merge pull request**, then delete the branch. If nobody reviw it in 24 hours, merge it yourself once  `./gradlew build` passes.
+7. Update your copy: `git switch main`, then `git pull`.
+
+## Rules
+
+- Never commit straight to `main`, and never force-push.
+- Don't change the repo's visibility. It stays private until 12:00 GMT on Mon 16 Nov 2026.
+- Diagrams: see `docs/architecture/README.md`.
