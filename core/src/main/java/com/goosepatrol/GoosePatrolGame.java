@@ -1,32 +1,60 @@
 package com.goosepatrol;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.goosepatrol.input.InputHandler;
+import com.goosepatrol.model.GameSession;
+import com.goosepatrol.model.GameSetup;
+import com.goosepatrol.view.EndScreen;
+import com.goosepatrol.view.GameScreen;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class GoosePatrolGame extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Texture image;
+/**
+ * The libGDX {@link Game}, shared by all platforms (D1). It builds each run with {@link GameSetup}, makes the
+ * screens and the key handler, and switches screens.
+ */
+public class GoosePatrolGame extends Game {
 
-    @Override
-    public void create() {
-        batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+  // One batch and one font, shared by every screen and freed in dispose().
+  private SpriteBatch batch;
+  private BitmapFont font;
+
+  /** Makes the game. The set-up happens in {@link #create()}, which libGDX calls once the window is ready. */
+  public GoosePatrolGame() {
+  }
+
+  @Override
+  public void create() {
+    batch = new SpriteBatch();
+    // font: Liberation Sans at 15 px
+    // font made at a readable size (QR_READABLE).
+    font = new BitmapFont();
+    startRun();
+  }
+
+  /** Builds a new run and shows it, waiting for the start key (FR_START_PAUSED). */
+  private void startRun() {
+    GameSession session = GameSetup.newSession();
+    Gdx.input.setInputProcessor(new InputHandler(session));
+    setScreen(new GameScreen(session, batch, font, this::showEndScreen));
+  }
+
+  /** Swaps the play screen for the end screen once the run has ended (FR_TIME_UP). */
+  private void showEndScreen() {
+    Screen playScreen = getScreen();
+    setScreen(new EndScreen(batch, font));
+    playScreen.dispose(); // setScreen() only hides the old screen, so free it here
+  }
+
+  @Override
+  public void dispose() {
+    super.dispose(); // hides the current screen
+    if (getScreen() != null) {
+      getScreen().dispose();
     }
-
-    @Override
-    public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        image.dispose();
-    }
+    batch.dispose();
+    font.dispose();
+  }
 }
