@@ -12,7 +12,7 @@ public final class GameConfig {
   /**
    * The longest frame the clock counts, in seconds. libGDX doesn't cap its frame time, so a frame stalled while
    * the window is dragged could take several seconds off the timer. Such a frame counts as this much instead
-   * (QR_TIMER_ACCURACY). A normal frame at 60 fps is about 0.017 s, so it is never cut.
+   * (FR_TIMER). A normal frame at 60 fps is about 0.017 s, so it is never cut.
    */
   public static final float MAX_FRAME_SECONDS = 0.1f;
 

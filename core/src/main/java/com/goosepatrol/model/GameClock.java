@@ -1,7 +1,7 @@
 package com.goosepatrol.model;
 
 /**
- * Counts down the time left in a run from the frame times it is given (FR_TIMER, QR_TIMER_ACCURACY, D4).
+ * Counts down the time left in a run from the frame times it is given (FR_TIMER, D4).
  *
  * <p>The clock doesn't know about pausing. {@link GameSession} calls {@link #tick(float)} only while the run is
  * PLAYING, so paused time never reaches it.
@@ -47,7 +47,7 @@ public class GameClock {
   }
 
   /**
-   * Says whether the run's time is up (FR_TIME_UP).
+   * Says whether the run's time is up (FR_TIMER).
    *
    * @return true once the time left has reached 0
    */

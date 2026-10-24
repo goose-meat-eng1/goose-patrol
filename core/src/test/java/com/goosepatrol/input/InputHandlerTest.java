@@ -9,6 +9,7 @@ import com.goosepatrol.model.GameClock;
 import com.goosepatrol.model.GameSession;
 import com.goosepatrol.model.RunState;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 class InputHandlerTest {
@@ -23,6 +24,7 @@ class InputHandlerTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
   void spaceStartsTheRun() {
     assertTrue(keys.keyDown(Input.Keys.SPACE));
 
@@ -30,6 +32,7 @@ class InputHandlerTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
   void pPausesAndResumes() {
     keys.keyDown(Input.Keys.SPACE);
 
@@ -41,6 +44,7 @@ class InputHandlerTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
   void leavesOtherKeysAlone() {
     assertFalse(keys.keyDown(Input.Keys.F12));
 

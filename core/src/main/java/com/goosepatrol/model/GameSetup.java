@@ -2,7 +2,7 @@ package com.goosepatrol.model;
 
 /**
  * Builds each new run with everything it starts with (D2). In slice 1 that is only the 5:00 clock. Later slices
- * add the map, the student, the items and the events here, so adding one changes only this class (QR_EXTENSIBLE).
+ * add the map, the student, the items and the events here, so adding one changes only this class (NFR_MAINTAIN).
  */
 public final class GameSetup {
 
@@ -10,7 +10,7 @@ public final class GameSetup {
   }
 
   /**
-   * Builds a new run that waits for the start key (FR_START_PAUSED).
+   * Builds a new run that waits for the start key (FR_PAUSE).
    *
    * @return the new run
    */

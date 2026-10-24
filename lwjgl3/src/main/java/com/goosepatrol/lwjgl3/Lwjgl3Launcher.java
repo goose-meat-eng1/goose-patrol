@@ -28,7 +28,7 @@ public class Lwjgl3Launcher {
     //// useful for testing performance, but can also be very stressful to some hardware.
     //// You may also need to configure GPU drivers to fully disable Vsync; this can cause screen tearing.
 
-    //// 1280 by 720 is the window size QR_READABLE is checked at.
+    //// 1280 by 720 is the window size the text's readability is checked at (UR_ACCESS).
     configuration.setWindowedMode(1280, 720);
     //// Pauses the run when the player switches to another window, not only when the window is minimised.
     configuration.setPauseWhenLostFocus(true);

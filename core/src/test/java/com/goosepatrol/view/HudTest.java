@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.goosepatrol.model.RunState;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 class HudTest {
 
   @Test
+  @Tag("FR_TIMER")
   void formatsTheTimeLeftRoundingUp() {
     assertEquals("5:00", Hud.formatTime(300));
     assertEquals("5:00", Hud.formatTime(299.5));
@@ -19,6 +21,7 @@ class HudTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
   void promptsOnlyWhenNotPlaying() {
     assertTrue(Hud.messageFor(RunState.READY).contains("SPACE"));
     assertTrue(Hud.messageFor(RunState.PAUSED).contains("P"));

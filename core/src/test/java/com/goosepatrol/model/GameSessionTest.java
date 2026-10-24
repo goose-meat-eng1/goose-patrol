@@ -3,6 +3,7 @@ package com.goosepatrol.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
@@ -25,6 +26,7 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
   void opensReadyAndNoTimePasses() {
     play(10);
 
@@ -33,6 +35,7 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_TIMER")
   void startBeginsTheCountdown() {
     session.start();
     play(10);
@@ -42,6 +45,7 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
   void pauseTakesEffectInTheSameFrame() {
     session.start();
     play(1);
@@ -55,6 +59,8 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
+  @Tag("FR_TIMER")
   void pausedTimeAddsNothing() {
     session.start();
     play(10);
@@ -68,6 +74,7 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_TIMER")
   void endsWhenTheTimeIsUp() {
     session.start();
     int frames = 0;
@@ -82,6 +89,7 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_TIMER")
   void nothingChangesAfterTheEnd() {
     session.start();
     play(301);
@@ -95,6 +103,7 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
   void pauseKeyDoesNothingBeforeTheStart() {
     session.togglePause();
 
@@ -102,6 +111,7 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_PAUSE")
   void startKeyDoesNotResumeAPausedRun() {
     session.start();
     session.togglePause();
@@ -111,6 +121,7 @@ class GameSessionTest {
   }
 
   @Test
+  @Tag("FR_TIMER")
   void aLongFrameCountsAsAtMostTheMaximum() {
     session.start();
     session.update(5);
