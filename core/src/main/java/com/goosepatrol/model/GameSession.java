@@ -11,7 +11,7 @@ public class GameSession {
 
   private final GameClock clock;
 
-  // FR_START_PAUSED: every run opens waiting for the start key.
+  // FR_PAUSE: every run opens waiting for the start key.
   private RunState state = RunState.READY;
 
   /**
@@ -25,7 +25,7 @@ public class GameSession {
   }
 
   /**
-   * Starts the run: READY becomes PLAYING (FR_START_PAUSED, D3). In any other state it does nothing.
+   * Starts the run: READY becomes PLAYING (FR_PAUSE, D3). In any other state it does nothing.
    */
   public void start() {
     if (state == RunState.READY) {
@@ -36,7 +36,7 @@ public class GameSession {
   /**
    * Pauses or resumes the run: PLAYING becomes PAUSED, and PAUSED becomes PLAYING (FR_PAUSE, D3). The next call
    * to {@link #update(float)} already sees the new state, so a pause takes effect in the same frame
-   * (QR_PAUSE_RESPONSE). Before the start and after the end it does nothing.
+   * (FR_PAUSE). Before the start and after the end it does nothing.
    */
   public void togglePause() {
     if (state == RunState.PLAYING) {
@@ -48,7 +48,7 @@ public class GameSession {
 
   /**
    * Moves the run on by one frame (D4). Only a PLAYING run changes: the clock counts down, and the run ends when
-   * the time is up (FR_TIMER, FR_TIME_UP). A frame longer than {@link GameConfig#MAX_FRAME_SECONDS} counts as
+   * the time is up (FR_TIMER). A frame longer than {@link GameConfig#MAX_FRAME_SECONDS} counts as
    * that much.
    *
    * @param delta the frame's length in seconds, as libGDX gives it

@@ -6,12 +6,12 @@ import com.goosepatrol.model.GameSession;
 
 /**
  * Turns key presses into commands on the run (D1). libGDX calls {@link #keyDown(int)} before the frame's update,
- * so a pause takes effect in the same frame (QR_PAUSE_RESPONSE). Slice 2 adds the movement keys, and slice 4 the
+ * so a pause takes effect in the same frame (FR_PAUSE). Slice 2 adds the movement keys, and slice 4 the
  * number keys for items.
  */
 public class InputHandler extends InputAdapter {
 
-  /** Starts the run (FR_START_PAUSED). */
+  /** Starts the run (FR_PAUSE). */
   public static final int START_KEY = Input.Keys.SPACE;
 
   /** Pauses and resumes the run (FR_PAUSE). */

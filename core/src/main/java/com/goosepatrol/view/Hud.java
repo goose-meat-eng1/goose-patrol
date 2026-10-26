@@ -52,7 +52,7 @@ public class Hud {
   }
 
   /**
-   * Returns the message for a state: the start prompt () or the paused message ().
+   * Returns the message for a state: the start prompt or the paused message (FR_PAUSE).
    *
    * @param state the state of the run
    * @return the message, or an empty string while playing

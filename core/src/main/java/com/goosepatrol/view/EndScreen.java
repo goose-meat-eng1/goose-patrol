@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
- * Shows why the run ended (D1, FR_TIME_UP). In A1 the only reason is that the time is up. Slices 3 and 4 add the
+ * Shows why the run ended (D1, FR_SCREENS). In A1 the only reason is that the time is up. Slices 3 and 4 add the
  * counters here.
  */
 public class EndScreen extends ScreenAdapter {

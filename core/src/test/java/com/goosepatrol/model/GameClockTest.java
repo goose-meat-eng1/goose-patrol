@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -12,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class GameClockTest {
 
   @Test
+  @Tag("FR_TIMER")
   void startsWithTheWholeRun() {
     GameClock clock = new GameClock(300);
 
@@ -20,6 +22,7 @@ class GameClockTest {
   }
 
   @Test
+  @Tag("FR_TIMER")
   void tickTakesOffTheFrameTime() {
     GameClock clock = new GameClock(300);
 
@@ -29,6 +32,7 @@ class GameClockTest {
   }
 
   @Test
+  @Tag("FR_TIMER")
   void stopsAtZero() {
     GameClock clock = new GameClock(300);
 
@@ -39,6 +43,7 @@ class GameClockTest {
   }
 
   @Test
+  @Tag("FR_TIMER")
   void ignoresFrameTimesThatAreNotPositive() {
     GameClock clock = new GameClock(300);
 
@@ -50,12 +55,14 @@ class GameClockTest {
   }
 
   @Test
+  @Tag("FR_TIMER")
   void rejectsARunWithNoTime() {
     assertThrows(IllegalArgumentException.class, () -> new GameClock(0));
   }
 
   @ParameterizedTest
   @ValueSource(ints = {30, 60, 144, 240})
+  @Tag("FR_TIMER")
   void fiveMinutesOfFramesEndsWithinOneSecond(int framesPerSecond) {
     GameClock clock = new GameClock(300);
     float frame = 1f / framesPerSecond;

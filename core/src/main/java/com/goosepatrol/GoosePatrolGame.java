@@ -29,19 +29,19 @@ public class GoosePatrolGame extends Game {
   public void create() {
     batch = new SpriteBatch();
     // font: Liberation Sans at 15 px
-    // font made at a readable size (QR_READABLE).
+    // font made at a readable size (UR_ACCESS).
     font = new BitmapFont();
     startRun();
   }
 
-  /** Builds a new run and shows it, waiting for the start key (FR_START_PAUSED). */
+  /** Builds a new run and shows it, waiting for the start key (FR_PAUSE). */
   private void startRun() {
     GameSession session = GameSetup.newSession();
     Gdx.input.setInputProcessor(new InputHandler(session));
     setScreen(new GameScreen(session, batch, font, this::showEndScreen));
   }
 
-  /** Swaps the play screen for the end screen once the run has ended (FR_TIME_UP). */
+  /** Swaps the play screen for the end screen once the run has ended (FR_SCREENS). */
   private void showEndScreen() {
     Screen playScreen = getScreen();
     setScreen(new EndScreen(batch, font));
