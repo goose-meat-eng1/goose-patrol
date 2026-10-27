@@ -24,6 +24,8 @@ class HudTest {
   @Tag("FR_PAUSE")
   void promptsOnlyWhenNotPlaying() {
     assertTrue(Hud.messageFor(RunState.READY).contains("SPACE"));
+    assertTrue(Hud.messageFor(RunState.READY).contains("WASD"));
+    assertTrue(Hud.messageFor(RunState.READY).contains("arrow keys"));
     assertTrue(Hud.messageFor(RunState.PAUSED).contains("P"));
     assertEquals("", Hud.messageFor(RunState.PLAYING));
   }

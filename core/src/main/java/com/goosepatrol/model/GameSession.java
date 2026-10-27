@@ -14,6 +14,10 @@ public class GameSession {
   // FR_PAUSE: every run opens waiting for the start key.
   private RunState state = RunState.READY;
 
+  // FR_MOVE: the held movement keys, each -1, 0 or 1, set every frame by the input handler.
+  private int moveX;
+  private int moveY;
+
   /**
    * Makes a run that waits for the start key. The game builds runs with {@link GameSetup#newSession()}; tests
    * can pass in a clock of their own.
@@ -61,6 +65,36 @@ public class GameSession {
     if (clock.isUp()) {
       state = RunState.ENDED; // D3: when(timeLeft = 0)
     }
+  }
+
+  /**
+   * Sets the direction the player is asking the student to move in (FR_MOVE). The input handler calls this every
+   * frame. Slice 2's student and map model (#4) moves the student by it in {@link #update(float)}.
+   *
+   * @param x -1 for left, 1 for right, 0 for neither
+   * @param y -1 for down, 1 for up, 0 for neither
+   */
+  public void setMoveInput(int x, int y) {
+    moveX = x;
+    moveY = y;
+  }
+
+  /**
+   * Returns the left-right part of the move input.
+   *
+   * @return -1 for left, 1 for right, 0 for neither
+   */
+  public int getMoveX() {
+    return moveX;
+  }
+
+  /**
+   * Returns the up-down part of the move input.
+   *
+   * @return -1 for down, 1 for up, 0 for neither
+   */
+  public int getMoveY() {
+    return moveY;
   }
 
   /**
