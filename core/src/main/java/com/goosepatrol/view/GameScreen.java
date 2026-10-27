@@ -10,12 +10,13 @@ import com.goosepatrol.model.GameSession;
 import com.goosepatrol.model.RunState;
 
 /**
- * The screen for play (D1). Each frame it passes libGDX's frame time to {@link GameSession#update(float)}, then
- * draws (D4). Slice 2 adds the map and the student.
+ * The screen for play (D1). Each frame it reads the held keys, passes libGDX's frame time to
+ * {@link GameSession#update(float)}, then draws (D4). Slice 2 adds the map and the student.
  */
 public class GameScreen extends ScreenAdapter {
 
   private final GameSession session;
+  private final Runnable readInput;
   private final SpriteBatch batch;
   private final Hud hud;
   private final Runnable onRunEnded;
@@ -27,12 +28,15 @@ public class GameScreen extends ScreenAdapter {
    * Makes the play screen for one run.
    *
    * @param session the run to show
+   * @param readInput called at the start of each frame to read the held keys (FR_MOVE)
    * @param batch the shared batch to draw with
    * @param font the shared font to write with
    * @param onRunEnded called once, when the run has ended, to show the end screen
    */
-  public GameScreen(GameSession session, SpriteBatch batch, BitmapFont font, Runnable onRunEnded) {
+  public GameScreen(
+      GameSession session, Runnable readInput, SpriteBatch batch, BitmapFont font, Runnable onRunEnded) {
     this.session = session;
+    this.readInput = readInput;
     this.batch = batch;
     this.hud = new Hud(session, font);
     this.onRunEnded = onRunEnded;
@@ -40,6 +44,7 @@ public class GameScreen extends ScreenAdapter {
 
   @Override
   public void render(float delta) {
+    readInput.run(); // FR_MOVE: read the held keys before the update
     session.update(delta); // D4: a frame starts with update(delta)
     if (session.getState() == RunState.ENDED) {
       onRunEnded.run(); // D3: ENDED shows the end screen

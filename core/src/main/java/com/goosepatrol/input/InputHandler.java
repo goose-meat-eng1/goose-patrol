@@ -3,11 +3,16 @@ package com.goosepatrol.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.goosepatrol.model.GameSession;
+import java.util.function.IntPredicate;
 
 /**
- * Turns key presses into commands on the run (D1). libGDX calls {@link #keyDown(int)} before the frame's update,
- * so a pause takes effect in the same frame (FR_PAUSE). Slice 2 adds the movement keys, and slice 4 the
- * number keys for items.
+ * Turns keys into commands on the run (D1). libGDX calls {@link #keyDown(int)} before the frame's update, so a
+ * pause takes effect in the same frame (FR_PAUSE).
+ *
+ * <p>The movement keys are not handled as key events. {@link #readMovement()} reads which of them are held once
+ * per frame and passes the direction to {@link GameSession#setMoveInput(int, int)} (FR_MOVE). A key let go while
+ * the window is in the background never sends keyUp, so tracking events could leave the student walking; reading
+ * the held keys each frame cannot. Slice 4 adds the number keys for items.
  */
 public class InputHandler extends InputAdapter {
 
@@ -17,15 +22,43 @@ public class InputHandler extends InputAdapter {
   /** Pauses and resumes the run (FR_PAUSE). */
   public static final int PAUSE_KEY = Input.Keys.P;
 
+  /** Moves the student up (FR_MOVE). */
+  public static final int UP_KEY = Input.Keys.W;
+
+  /** Moves the student down (FR_MOVE). */
+  public static final int DOWN_KEY = Input.Keys.S;
+
+  /** Moves the student left (FR_MOVE). */
+  public static final int LEFT_KEY = Input.Keys.A;
+
+  /** Moves the student right (FR_MOVE). */
+  public static final int RIGHT_KEY = Input.Keys.D;
+
+  /** Moves the student up, as {@link #UP_KEY} does (FR_MOVE). */
+  public static final int UP_ARROW = Input.Keys.UP;
+
+  /** Moves the student down, as {@link #DOWN_KEY} does (FR_MOVE). */
+  public static final int DOWN_ARROW = Input.Keys.DOWN;
+
+  /** Moves the student left, as {@link #LEFT_KEY} does (FR_MOVE). */
+  public static final int LEFT_ARROW = Input.Keys.LEFT;
+
+  /** Moves the student right, as {@link #RIGHT_KEY} does (FR_MOVE). */
+  public static final int RIGHT_ARROW = Input.Keys.RIGHT;
+
   private final GameSession session;
+  private final IntPredicate isHeld;
 
   /**
    * Makes the key handler for one run.
    *
    * @param session the run the keys control
+   * @param isHeld tells whether a key is held down; the game passes {@code Gdx.input::isKeyPressed}, and tests
+   *     pass their own
    */
-  public InputHandler(GameSession session) {
+  public InputHandler(GameSession session, IntPredicate isHeld) {
     this.session = session;
+    this.isHeld = isHeld;
   }
 
   /**
@@ -45,5 +78,28 @@ public class InputHandler extends InputAdapter {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Reads the held movement keys and passes the direction to the run (FR_MOVE). Call it once per frame, before
+   * {@link GameSession#update(float)}. Each of x and y is -1, 0 or 1; opposite keys cancel, so holding left and
+   * right gives x = 0.
+   */
+  public void readMovement() {
+    int x = axis(LEFT_KEY, LEFT_ARROW, RIGHT_KEY, RIGHT_ARROW);
+    int y = axis(DOWN_KEY, DOWN_ARROW, UP_KEY, UP_ARROW);
+    session.setMoveInput(x, y);
+  }
+
+  /** Returns -1 if a negative key is held, 1 if a positive one is, and 0 for both or neither. */
+  private int axis(int negative, int negativeArrow, int positive, int positiveArrow) {
+    int value = 0;
+    if (isHeld.test(negative) || isHeld.test(negativeArrow)) {
+      value--;
+    }
+    if (isHeld.test(positive) || isHeld.test(positiveArrow)) {
+      value++;
+    }
+    return value;
   }
 }
