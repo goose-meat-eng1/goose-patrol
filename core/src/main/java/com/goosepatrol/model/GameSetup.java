@@ -1,8 +1,8 @@
 package com.goosepatrol.model;
 
 /**
- * Builds each new run with everything it starts with (D2). In slice 1 that is only the 5:00 clock. Later slices
- * add the map, the student, the items and the events here, so adding one changes only this class (NFR_MAINTAIN).
+ * Builds each new run with everything it starts with (D2): the 5:00 clock, and the student at the map's starting
+ * place. Later slices add the items and the events here, so adding one changes only this class (NFR_MAINTAIN).
  */
 public final class GameSetup {
 
@@ -10,11 +10,12 @@ public final class GameSetup {
   }
 
   /**
-   * Builds a new run that waits for the start key (FR_PAUSE).
+   * Builds a new run on a map, waiting for the start key (FR_PAUSE).
    *
+   * @param map the campus to play on
    * @return the new run
    */
-  public static GameSession newSession() {
-    return new GameSession(new GameClock(GameConfig.RUN_SECONDS));
+  public static GameSession newSession(CampusMap map) {
+    return new GameSession(new GameClock(GameConfig.RUN_SECONDS), map, new Player(map.getStudentStart()));
   }
 }

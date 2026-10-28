@@ -1,7 +1,10 @@
 package com.goosepatrol.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.badlogic.gdx.math.Vector2;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -11,12 +14,15 @@ class GameSessionTest {
 
   private static final float FRAME = 1f / 60;
   private static final double TOLERANCE = 0.001;
+  private static final Vector2 START = new Vector2(500, 500);
+  private static final float START_X = START.x - Player.WIDTH / 2;
 
   private GameSession session;
 
   @BeforeEach
   void newRun() {
-    session = new GameSession(new GameClock(300));
+    CampusMap openGround = new CampusMap(1000, 1000, List.of(), START);
+    session = new GameSession(new GameClock(300), openGround, new Player(START));
   }
 
   private void play(int seconds) {
@@ -127,5 +133,35 @@ class GameSessionTest {
     session.update(5);
 
     assertEquals(300 - GameConfig.MAX_FRAME_SECONDS, session.getTimeLeft(), TOLERANCE);
+  }
+
+  @Test
+  @Tag("FR_PAUSE")
+  void studentStaysStillBeforeTheStart() {
+    session.setMoveInput(1, 0);
+    play(1);
+
+    assertEquals(START_X, session.getPlayer().getBounds().x);
+  }
+
+  @Test
+  @Tag("FR_PAUSE")
+  void studentStaysStillWhilePaused() {
+    session.start();
+    session.togglePause();
+    session.setMoveInput(1, 0);
+    play(1);
+
+    assertEquals(START_X, session.getPlayer().getBounds().x);
+  }
+
+  @Test
+  @Tag("FR_MOVE")
+  void studentMovesWhilePlaying() {
+    session.start();
+    session.setMoveInput(1, 0);
+    play(1);
+
+    assertTrue(session.getPlayer().getBounds().x > START_X);
   }
 }
