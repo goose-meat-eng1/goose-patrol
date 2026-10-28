@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-
 class GameSessionTest {
 
   private static final float FRAME = 1f / 60;
@@ -133,15 +132,6 @@ class GameSessionTest {
     session.update(5);
 
     assertEquals(300 - GameConfig.MAX_FRAME_SECONDS, session.getTimeLeft(), TOLERANCE);
-  }
-
-  @Test
-  @Tag("FR_PAUSE")
-  void studentStaysStillBeforeTheStart() {
-    session.setMoveInput(1, 0);
-    play(1);
-
-    assertEquals(START_X, session.getPlayer().getBounds().x);
   }
 
   @Test

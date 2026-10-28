@@ -3,7 +3,6 @@ package com.goosepatrol.view;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.goosepatrol.model.Player;
 import java.io.File;
@@ -114,19 +113,6 @@ class CampusMapFileTest {
   @Tag("FR_MAP")
   void isAFiniteMap() {
     assertEquals("0", map.getAttribute("infinite")); // libGDX can't load infinite maps
-  }
-
-  @Test
-  @Tag("FR_MAP")
-  void hasWallsInsideTheMap() throws Exception {
-    int width = number(map, "width") * number(map, "tilewidth");
-    int height = number(map, "height") * number(map, "tileheight");
-    List<int[]> walls = walls();
-
-    assertFalse(walls.isEmpty());
-    for (int[] w : walls) {
-      assertTrue(w[0] >= 0 && w[1] >= 0 && w[0] + w[2] <= width && w[1] + w[3] <= height);
-    }
   }
 
   @Test

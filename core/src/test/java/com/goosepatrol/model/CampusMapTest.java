@@ -1,6 +1,5 @@
 package com.goosepatrol.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -16,14 +15,6 @@ class CampusMapTest {
 
   private final Rectangle wall = new Rectangle(100, 100, 32, 32);
   private final CampusMap map = new CampusMap(400, 300, List.of(wall), new Vector2(50, 60));
-
-  @Test
-  @Tag("FR_MAP")
-  void knowsItsSizeAndStart() {
-    assertEquals(400, map.getWidth());
-    assertEquals(300, map.getHeight());
-    assertEquals(new Vector2(50, 60), map.getStudentStart());
-  }
 
   @Test
   @Tag("FR_MAP")

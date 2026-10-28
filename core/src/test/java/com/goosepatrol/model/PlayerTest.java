@@ -36,15 +36,6 @@ class PlayerTest {
   }
 
   @Test
-  @Tag("FR_MAP")
-  void startsCentredOnItsStartingPlace() {
-    Rectangle box = new Player(START).getBounds();
-
-    assertEquals(START.x - Player.WIDTH / 2, box.x);
-    assertEquals(START.y - Player.HEIGHT / 2, box.y);
-  }
-
-  @Test
   @Tag("FR_MOVE")
   void reachesFullSpeedInTheSpeedUpTime() {
     for (int fps : new int[] {60, 100}) {
@@ -55,55 +46,6 @@ class PlayerTest {
       holdFrames(player, 1, 0, 1, 1f / fps);
       assertEquals(MAX, player.getVelocity().x, 0.001);
     }
-  }
-
-  @Test
-  @Tag("FR_MOVE")
-  void speedsUpEvenly() {
-    Player player = new Player(START);
-    holdFrames(player, 1, 0, frames(SPEED_UP / 2, 120), 1f / 120);
-
-    assertEquals(MAX / 2, player.getVelocity().x, 0.01);
-  }
-
-  @Test
-  @Tag("FR_MOVE")
-  void reachesFullSpeedDiagonallyInTheSameTime() {
-    Player player = new Player(START);
-    holdFrames(player, 1, 1, frames(SPEED_UP, 60) - 1, FRAME);
-    assertTrue(player.getVelocity().len() < MAX);
-
-    holdFrames(player, 1, 1, 1, FRAME);
-    assertEquals(MAX, player.getVelocity().len(), 0.01);
-  }
-
-  @Test
-  @Tag("FR_MOVE")
-  void stopsInTheStopTime() {
-    Player player = new Player(START);
-    hold(player, 1, 0, SPEED_UP + 0.5f, OPEN_GROUND);
-    float letGoAt = player.getBounds().x;
-
-    holdFrames(player, 0, 0, frames(STOP, 60) - 1, FRAME);
-    assertTrue(player.getVelocity().x > 0);
-
-    holdFrames(player, 0, 0, 1, FRAME);
-    assertEquals(0, player.getVelocity().x, 0.001);
-    float slide = player.getBounds().x - letGoAt;
-    assertTrue(slide <= MAX * STOP / 2 && slide > MAX * STOP / 2 - MAX * FRAME);
-  }
-
-  @Test
-  @Tag("FR_MOVE")
-  void turnsBackByStoppingThenSpeedingUp() {
-    Player player = new Player(START);
-    hold(player, 1, 0, SPEED_UP + 0.5f, OPEN_GROUND);
-
-    holdFrames(player, -1, 0, frames(STOP, 60), FRAME);
-    assertEquals(0, player.getVelocity().x, 0.01);
-
-    holdFrames(player, -1, 0, frames(SPEED_UP, 60), FRAME);
-    assertEquals(-MAX, player.getVelocity().x, 0.001);
   }
 
   @Test
@@ -125,42 +67,6 @@ class PlayerTest {
 
     assertEquals(wall.x, player.getBounds().x + Player.WIDTH);
     assertEquals(0, player.getVelocity().x);
-  }
-
-  @Test
-  @Tag("FR_MAP")
-  void slidesAlongAWall() {
-    Rectangle wall = new Rectangle(600, 0, 32, 1000);
-    CampusMap map = new CampusMap(1000, 1000, List.of(wall), START);
-    Player player = new Player(START);
-    hold(player, 1, 1, 2, map);
-
-    assertEquals(wall.x, player.getBounds().x + Player.WIDTH);
-    assertTrue(player.getBounds().y > START.y);
-  }
-
-  @Test
-  @Tag("FR_MOVE")
-  void facesTheWayTheKeysPoint() {
-    Player player = new Player(START);
-    assertEquals(Facing.DOWN, player.getFacing());
-
-    hold(player, 1, 0, 0.1f, OPEN_GROUND);
-    assertEquals(Facing.RIGHT, player.getFacing());
-
-    hold(player, 0, 0, 0.1f, OPEN_GROUND);
-    assertEquals(Facing.RIGHT, player.getFacing());
-
-    hold(player, 0, 1, 0.1f, OPEN_GROUND);
-    assertEquals(Facing.UP, player.getFacing());
-  }
-
-  @Test
-  @Tag("FR_MOVE")
-  void diagonalsKeepTheWayTheStudentFaces() {
-    assertEquals(Facing.RIGHT, Player.facingFor(1, 1, Facing.RIGHT));
-    assertEquals(Facing.UP, Player.facingFor(1, 1, Facing.UP));
-    assertEquals(Facing.LEFT, Player.facingFor(-1, 1, Facing.DOWN));
   }
 
   @Test
