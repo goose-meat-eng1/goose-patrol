@@ -31,6 +31,9 @@ public final class GameConfig {
    */
   public static final float STUDENT_STOP_SECONDS = 0.5f;
 
+  /** The constant velocity the geese will approach the player. (FR_GOOSE_MOVE)*/
+  public static final float GOOSE_VELOCITY = 100f;
+
   private GameConfig() {
   }
 }
