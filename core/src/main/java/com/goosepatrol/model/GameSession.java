@@ -13,12 +13,12 @@ public class GameSession {
   private final CampusMap map;
   private final Player player;
 
-  // The direction the movement keys point, as the key handler last set it (FR_MOVE).
-  private int moveX;
-  private int moveY;
-
   // FR_PAUSE: every run opens waiting for the start key.
   private RunState state = RunState.READY;
+
+  // FR_MOVE: the held movement keys, each -1, 0 or 1, set every frame by the input handler.
+  private int moveX;
+  private int moveY;
 
   /**
    * Makes a run that waits for the start key. The game builds runs with {@link GameSetup#newSession(CampusMap)};
@@ -57,18 +57,6 @@ public class GameSession {
   }
 
   /**
-   * Sets the direction the movement keys point, for the next frames (FR_MOVE). The key handler calls this every
-   * frame.
-   *
-   * @param x the left-right direction: -1 for left, 0, or 1 for right
-   * @param y the down-up direction: -1 for down, 0, or 1 for up
-   */
-  public void setMoveInput(int x, int y) {
-    moveX = x;
-    moveY = y;
-  }
-
-  /**
    * Moves the run on by one frame (D4). Only a PLAYING run changes: the clock counts down, the run ends when the
    * time is up (FR_TIMER), and otherwise the student moves (FR_MOVE). A frame longer than
    * {@link GameConfig#MAX_FRAME_SECONDS} counts as that much.
@@ -86,6 +74,36 @@ public class GameSession {
       return;
     }
     player.update(moveX, moveY, frame, map);
+  }
+
+  /**
+   * Sets the direction the player is asking the student to move in (FR_MOVE). The input handler calls this every
+   * frame. Slice 2's student and map model (#4) moves the student by it in {@link #update(float)}.
+   *
+   * @param x -1 for left, 1 for right, 0 for neither
+   * @param y -1 for down, 1 for up, 0 for neither
+   */
+  public void setMoveInput(int x, int y) {
+    moveX = x;
+    moveY = y;
+  }
+
+  /**
+   * Returns the left-right part of the move input.
+   *
+   * @return -1 for left, 1 for right, 0 for neither
+   */
+  public int getMoveX() {
+    return moveX;
+  }
+
+  /**
+   * Returns the up-down part of the move input.
+   *
+   * @return -1 for down, 1 for up, 0 for neither
+   */
+  public int getMoveY() {
+    return moveY;
   }
 
   /**

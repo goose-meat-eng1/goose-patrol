@@ -50,8 +50,9 @@ public class GoosePatrolGame extends Game {
   /** Builds a new run and shows it, waiting for the start key (FR_PAUSE). */
   private void startRun() {
     GameSession session = GameSetup.newSession(campusMap);
-    Gdx.input.setInputProcessor(new InputHandler(session));
-    setScreen(new GameScreen(session, batch, font, this::showEndScreen));
+    InputHandler keys = new InputHandler(session, Gdx.input::isKeyPressed);
+    Gdx.input.setInputProcessor(keys);
+    setScreen(new GameScreen(session, keys::readMovement, batch, font, this::showEndScreen));
   }
 
   /** Swaps the play screen for the end screen once the run has ended (FR_SCREENS). */

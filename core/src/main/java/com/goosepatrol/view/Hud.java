@@ -59,7 +59,7 @@ public class Hud {
    */
   static String messageFor(RunState state) {
     return switch (state) {
-      case READY -> "Press SPACE to start. P pauses the game.";
+      case READY -> "Press SPACE to start. Move with WASD or the arrow keys. P pauses the game.";
       case PAUSED -> "Paused. Press P to carry on.";
       default -> "";
     };
