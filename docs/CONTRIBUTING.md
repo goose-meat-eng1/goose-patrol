@@ -63,5 +63,13 @@
 ## Rules
 
 - Never commit straight to `main`, and never force-push.
+- When a slice is finished (all its issues merged), tag `main` with the minor version one higher than the last tag:
+  slice 2 is `v0.2.0`, slice 3 is `v0.3.0`.
+  ```
+  git switch main
+  git pull
+  git tag -a v0.2.0 -m "Slice 2: ..."
+  git push origin v0.2.0
+  ```
 - Don't change the repo's visibility. It stays private until 12:00 GMT on Mon 16 Nov 2026.
 - Diagrams: see `docs/architecture/README.md`.
