@@ -5,10 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
+import com.goosepatrol.model.CampusMap;
 import com.goosepatrol.model.GameClock;
 import com.goosepatrol.model.GameSession;
+import com.goosepatrol.model.Player;
 import com.goosepatrol.model.RunState;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -24,7 +28,8 @@ class InputHandlerTest {
 
   @BeforeEach
   void newRun() {
-    session = new GameSession(new GameClock(300));
+    CampusMap openGround = new CampusMap(1000, 1000, List.of(), new Vector2(500, 500));
+    session = new GameSession(new GameClock(300), openGround, new Player(openGround.getStudentStart()));
     keys = new InputHandler(session, held::contains);
   }
 

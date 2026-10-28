@@ -11,7 +11,24 @@
    git config --global user.email "you@york.ac.uk"
    ```
 
-4. Clone the repo, then that it builds and runs. on windows use `gradlew.bat`    instead of `./gradlew`.
+4. Log Git in to GitHub with your own account. Either use [GitHub CLI](https://cli.github.com):
+
+   ```
+   gh auth login
+   gh auth setup-git
+   ```
+
+   Or use Git Credential Manager. Git for Windows already has it. On a Mac:
+
+   ```
+   brew install git
+   brew install --cask git-credential-manager
+   ```
+
+   Either way, you log in through your browser and never handle a token. Don't use
+   `git config credential.helper store`.
+
+5. Clone the repo, then that it builds and runs. on windows use `gradlew.bat`    instead of `./gradlew`.
    The first build downloads Gradle and the Java it runs on, so it needs internet.
 
    ```
