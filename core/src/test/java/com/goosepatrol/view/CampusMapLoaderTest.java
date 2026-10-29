@@ -4,14 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.objects.PointMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.goosepatrol.model.CampusMap;
@@ -19,31 +15,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 class CampusMapLoaderTest {
-
-  // A tile with no picture, ticked "solid" or "water" if asked.
-  private static TiledMapTile tile(String ticked) {
-    StaticTiledMapTile tile = new StaticTiledMapTile(new TextureRegion());
-    if (ticked != null) {
-      tile.getProperties().put(ticked, true);
-    }
-    return tile;
-  }
-
-  // A 10 x 5 tile layer drawn as text, top row first: # is solid, ~ is water, o is a plain tile, . is empty.
-  private static TiledMapTileLayer layer(String... rows) {
-    TiledMapTileLayer layer = new TiledMapTileLayer(10, 5, 16, 16);
-    for (int i = 0; i < rows.length; i++) {
-      int row = rows.length - 1 - i; // the picture's top row is the layer's highest row
-      for (int column = 0; column < rows[i].length(); column++) {
-        char c = rows[i].charAt(column);
-        if (c != '.') {
-          String ticked = c == '#' ? CampusMapLoader.SOLID_PROPERTY : c == '~' ? CampusMapLoader.WATER_PROPERTY : null;
-          layer.setCell(column, row, new TiledMapTileLayer.Cell().setTile(tile(ticked)));
-        }
-      }
-    }
-    return layer;
-  }
 
   // A 10 x 5 map of 16 px tiles, with or without a Collisions rectangle and a student point.
   private static TiledMap tiledMap(boolean withCollisions, boolean withStudent) {
@@ -83,14 +54,12 @@ class CampusMapLoaderTest {
 
   @Test
   @Tag("FR_MAP")
-  void readsWaterTilesAsWallsForTheStudent() {
+  void readsDeepWaterAsWallsForTheStudent() {
     TiledMap map = tiledMap(false, true);
-    map.getLayers().add(layer(
-        "..........",
-        "......~~~.",
-        "......~~~.",
-        "..........",
-        ".........."));
+    MapLayer deepWater = new MapLayer();
+    deepWater.setName(CampusMapLoader.DEEP_WATER_LAYER);
+    deepWater.getObjects().add(new RectangleMapObject(96, 32, 48, 32));
+    map.getLayers().add(deepWater);
 
     CampusMap campus = CampusMapLoader.fromTiledMap(map);
 
