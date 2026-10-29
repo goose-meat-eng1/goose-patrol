@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="160" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="131">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="160" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="177">
  <tileset firstgid="1" name="Floor" tilewidth="16" tileheight="16" tilecount="400" columns="20">
   <image source="Tilemap for Floor.png" width="320" height="320"/>
   <tile id="0"/>
@@ -102,40 +102,16 @@
   <tile id="97"/>
   <tile id="98"/>
   <tile id="99"/>
-  <tile id="100">
-   <properties>
-    <property name="water" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="101">
-   <properties>
-    <property name="water" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="107">
-   <properties>
-    <property name="water" type="bool" value="true"/>
-   </properties>
-  </tile>
+  <tile id="100"/>
+  <tile id="101"/>
+  <tile id="107"/>
   <tile id="103"/>
   <tile id="104"/>
   <tile id="105"/>
   <tile id="106"/>
-  <tile id="108">
-   <properties>
-    <property name="water" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="102">
-   <properties>
-    <property name="shallow" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="109">
-   <properties>
-    <property name="shallow" type="bool" value="true"/>
-   </properties>
-  </tile>
+  <tile id="108"/>
+  <tile id="102"/>
+  <tile id="109"/>
   <tile id="110"/>
   <tile id="111"/>
   <tile id="112"/>
@@ -1123,6 +1099,56 @@
   <object id="126" x="1623" y="662.5" width="16.5" height="6"/>
   <object id="127" x="642" y="717" width="135.5" height="10.5"/>
   <object id="128" x="780" y="721.5" width="20" height="6"/>
+ </objectgroup>
+ <objectgroup color="#ff2d55" id="10" name="Deep water">
+  <object id="131" x="160" y="1072" width="2240" height="192"/>
+  <object id="132" x="176" y="1056" width="2224" height="16"/>
+  <object id="133" x="192" y="1040" width="800" height="16"/>
+  <object id="134" x="1584" y="1040" width="800" height="16"/>
+  <object id="135" x="224" y="1024" width="560" height="16"/>
+  <object id="136" x="1792" y="1024" width="560" height="16"/>
+  <object id="137" x="240" y="1008" width="416" height="16"/>
+  <object id="138" x="1920" y="1008" width="416" height="16"/>
+  <object id="139" x="256" y="992" width="288" height="16"/>
+  <object id="140" x="2032" y="992" width="288" height="16"/>
+  <object id="141" x="288" y="976" width="160" height="16"/>
+  <object id="142" x="2128" y="976" width="160" height="16"/>
+  <object id="143" x="304" y="960" width="48" height="16"/>
+  <object id="144" x="2224" y="960" width="48" height="16"/>
+ </objectgroup>
+ <objectgroup color="#ffcc00" id="11" name="Shallow water">
+  <object id="145" x="128" y="1264" width="2304" height="32"/>
+  <object id="146" x="128" y="1072" width="32" height="192"/>
+  <object id="147" x="2400" y="1056" width="32" height="208"/>
+  <object id="148" x="128" y="1056" width="48" height="16"/>
+  <object id="149" x="128" y="1040" width="64" height="16"/>
+  <object id="150" x="992" y="1040" width="592" height="16"/>
+  <object id="151" x="2384" y="1040" width="48" height="16"/>
+  <object id="152" x="144" y="1024" width="80" height="16"/>
+  <object id="153" x="784" y="1024" width="1008" height="16"/>
+  <object id="154" x="2352" y="1024" width="80" height="16"/>
+  <object id="155" x="160" y="1008" width="80" height="16"/>
+  <object id="156" x="656" y="1008" width="368" height="16"/>
+  <object id="157" x="1552" y="1008" width="368" height="16"/>
+  <object id="158" x="2336" y="1008" width="80" height="16"/>
+  <object id="159" x="192" y="992" width="64" height="16"/>
+  <object id="160" x="544" y="992" width="272" height="16"/>
+  <object id="161" x="1760" y="992" width="272" height="16"/>
+  <object id="162" x="2320" y="992" width="64" height="16"/>
+  <object id="163" x="208" y="976" width="80" height="16"/>
+  <object id="164" x="448" y="976" width="240" height="16"/>
+  <object id="165" x="1888" y="976" width="240" height="16"/>
+  <object id="166" x="2288" y="976" width="80" height="16"/>
+  <object id="167" x="224" y="960" width="80" height="16"/>
+  <object id="168" x="352" y="960" width="224" height="16"/>
+  <object id="169" x="2000" y="960" width="224" height="16"/>
+  <object id="170" x="2272" y="960" width="80" height="16"/>
+  <object id="171" x="256" y="944" width="224" height="16"/>
+  <object id="172" x="2096" y="944" width="224" height="16"/>
+  <object id="173" x="272" y="928" width="112" height="16"/>
+  <object id="174" x="2192" y="928" width="112" height="16"/>
+  <object id="175" x="288" y="912" width="16" height="16"/>
+  <object id="176" x="2272" y="912" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="8" name="Spawns">
   <object id="62" name="student" x="1288" y="184">
