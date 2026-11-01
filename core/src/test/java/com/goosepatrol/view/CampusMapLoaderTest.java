@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapGroupLayer; 
 import com.badlogic.gdx.maps.objects.PointMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -24,10 +25,10 @@ class CampusMapLoaderTest {
     map.getProperties().put("tilewidth", 16);
     map.getProperties().put("tileheight", 16);
     if (withCollisions) {
-      MapLayer collisions = new MapLayer();
-      collisions.setName(CampusMapLoader.COLLISIONS_LAYER);
-      collisions.getObjects().add(new RectangleMapObject(32, 16, 48, 16));
-      map.getLayers().add(collisions);
+      MapLayer solids = new MapLayer();
+      solids.setName(CampusMapLoader.SOLIDS_LAYER);
+      solids.getObjects().add(new RectangleMapObject(32, 16, 48, 16));
+      collisionsGroup(map).getLayers().add(solids);
     }
     MapLayer spawns = new MapLayer();
     spawns.setName(CampusMapLoader.SPAWNS_LAYER);
@@ -38,6 +39,18 @@ class CampusMapLoaderTest {
     }
     map.getLayers().add(spawns);
     return map;
+  }
+
+  // The map's Collisions group, added to the map the first time it's asked for.
+  private static MapGroupLayer collisionsGroup(TiledMap map) {
+    MapLayer found = map.getLayers().get(CampusMapLoader.COLLISIONS_GROUP);
+    if (found instanceof MapGroupLayer) {
+      return (MapGroupLayer) found;
+    }
+    MapGroupLayer group = new MapGroupLayer();
+    group.setName(CampusMapLoader.COLLISIONS_GROUP);
+    map.getLayers().add(group);
+    return group;
   }
 
   @Test
@@ -59,7 +72,7 @@ class CampusMapLoaderTest {
     MapLayer deepWater = new MapLayer();
     deepWater.setName(CampusMapLoader.DEEP_WATER_LAYER);
     deepWater.getObjects().add(new RectangleMapObject(96, 32, 48, 32));
-    map.getLayers().add(deepWater);
+    collisionsGroup(map).getLayers().add(deepWater);
 
     CampusMap campus = CampusMapLoader.fromTiledMap(map);
 

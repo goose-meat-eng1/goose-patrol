@@ -1,5 +1,7 @@
 package com.goosepatrol.view;
 
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -19,11 +21,16 @@ import java.util.List;
  */
 public final class CampusMapLoader {
 
-  /** The Tiled object layer whose rectangles are walls, such as the sides of the buildings. The layer is optional. */
-  public static final String COLLISIONS_LAYER = "Collisions";
+  /** The Tiled group that holds the Solids, Deep water and Shallow water layers. */
+  public static final String COLLISIONS_GROUP = "Collisions";
 
-  /** The Tiled object layer whose rectangles are deep water, which stops the student. The layer is optional. */
+  public static final String SOLIDS_LAYER = "Solids";
+
+  /** The Tiled object layer whose rectangles are deep water, which stops the student. */
   public static final String DEEP_WATER_LAYER = "Deep water";
+
+  /** The layer in the Collisions group whose rectangles are shallow water. */
+  public static final String SHALLOW_WATER_LAYER = "Shallow water";
 
   /** The Tiled object layer that holds the starting places. */
   public static final String SPAWNS_LAYER = "Spawns";
@@ -46,8 +53,10 @@ public final class CampusMapLoader {
     float width = properties.get("width", Integer.class) * properties.get("tilewidth", Integer.class);
     float height = properties.get("height", Integer.class) * properties.get("tileheight", Integer.class);
 
-    List<Rectangle> walls = rectangles(tiledMap, COLLISIONS_LAYER);
-    walls.addAll(rectangles(tiledMap, DEEP_WATER_LAYER)); // the student can't swim, so deep water stops them
+    MapLayers collisions = collisionLayers(tiledMap);
+    List<Rectangle> solids = rectangles(collisions, SOLIDS_LAYER);
+    List<Rectangle> deepWater = rectangles(collisions, DEEP_WATER_LAYER);
+    List<Rectangle> shallowWater = rectangles(collisions, SHALLOW_WATER_LAYER);
 
     MapLayer spawns = tiledMap.getLayers().get(SPAWNS_LAYER);
     MapObject student = spawns == null ? null : spawns.getObjects().get(STUDENT_SPAWN);
@@ -55,20 +64,28 @@ public final class CampusMapLoader {
       throw new IllegalArgumentException("The map has no \"" + STUDENT_SPAWN + "\" point in its \"" + SPAWNS_LAYER
           + "\" layer");
     }
-    return new CampusMap(width, height, walls, ((PointMapObject) student).getPoint());
+    return new CampusMap(width, height, solids, deepWater, shallowWater, ((PointMapObject) student).getPoint());
+  }
+
+  private static MapLayers collisionLayers(TiledMap tiledMap) {
+    MapLayer group = tiledMap.getLayers().get(COLLISIONS_GROUP);
+    if (group instanceof MapGroupLayer) {
+      return ((MapGroupLayer) group).getLayers();
+    }
+    return new MapLayers(); // no group: no walls and no water
   }
 
   /**
    * Reads the rectangles drawn on one object layer. Other shapes, such as polygons, are left out, so these layers
    * are drawn with Tiled's rectangle tool.
    *
-   * @param tiledMap the map
+   * @param layers the map layers
    * @param layerName the object layer's name in Tiled
    * @return copies of the rectangles, in map pixels with y counted upwards, or an empty list if there is no such layer
    */
-  private static List<Rectangle> rectangles(TiledMap tiledMap, String layerName) {
+  private static List<Rectangle> rectangles(MapLayers layers, String layerName) {
     List<Rectangle> rectangles = new ArrayList<>();
-    MapLayer layer = tiledMap.getLayers().get(layerName);
+    MapLayer layer = layers.get(layerName);
     if (layer != null) {
       for (RectangleMapObject shape : layer.getObjects().getByType(RectangleMapObject.class)) {
         rectangles.add(new Rectangle(shape.getRectangle()));
