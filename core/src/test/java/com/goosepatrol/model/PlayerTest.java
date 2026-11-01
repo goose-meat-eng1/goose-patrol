@@ -14,7 +14,6 @@ class PlayerTest {
   private static final float FRAME = 1f / 60;
   private static final float MAX = GameConfig.STUDENT_MAX_SPEED;
   private static final float SPEED_UP = GameConfig.STUDENT_SPEED_UP_SECONDS;
-  private static final float STOP = GameConfig.STUDENT_STOP_SECONDS;
   private static final Vector2 START = new Vector2(500, 500);
   private static final CampusMap OPEN_GROUND = new CampusMap(1000, 1000, List.of(), START);
 
