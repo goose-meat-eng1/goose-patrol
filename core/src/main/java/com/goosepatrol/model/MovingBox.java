@@ -1,5 +1,7 @@
 package com.goosepatrol.model;
 
+import java.util.function.Function;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -11,18 +13,23 @@ final class MovingBox {
     bounds = new Rectangle(x, y, width, height);
   }
 
-  // Moves across, keeping the box inside the map and out of walls. True means the move was cut short.
+  // Moves across, stopping at the map's walls (solids and deep water).
   boolean moveX(float dx, CampusMap map) {
+    return moveX(dx, map, map::wallOverlapping);
+  }
+
+  // Moves across, keeping the box inside the map and out of walls. True means the move was cut short.
+  boolean moveX(float dx, CampusMap map, Function<Rectangle, Rectangle> wallAt) {
     if (dx == 0) {
       return false;
     }
     float oldX = bounds.x;
     float wantedX = oldX + dx;
     bounds.x = MathUtils.clamp(wantedX, 0, map.getWidth() - bounds.width);
-    Rectangle wall = map.wallOverlapping(bounds);
+    Rectangle wall = wallAt.apply(bounds);
     if (wall != null) {
       bounds.x = dx > 0 ? wall.x - bounds.width : wall.x + wall.width; // right against the wall's near side
-      if (map.wallOverlapping(bounds) != null) {
+      if (wallAt.apply(bounds) != null) {
         bounds.x = oldX; // squeezed between two walls: stay where it was
       }
     }
@@ -31,16 +38,21 @@ final class MovingBox {
 
   // Moves up or down, the same way as moveX.
   boolean moveY(float dy, CampusMap map) {
+    return moveY(dy, map, map::wallOverlapping);
+  }
+
+  // Moves up or down, the same way as moveX.
+  boolean moveY(float dy, CampusMap map, Function<Rectangle, Rectangle> wallAt) {
     if (dy == 0) {
       return false;
     }
     float oldY = bounds.y;
     float wantedY = oldY + dy;
     bounds.y = MathUtils.clamp(wantedY, 0, map.getHeight() - bounds.height);
-    Rectangle wall = map.wallOverlapping(bounds);
+    Rectangle wall = wallAt.apply(bounds);
     if (wall != null) {
       bounds.y = dy > 0 ? wall.y - bounds.height : wall.y + wall.height;
-      if (map.wallOverlapping(bounds) != null) {
+      if (wallAt.apply(bounds) != null) {
         bounds.y = oldY;
       }
     }
@@ -51,4 +63,14 @@ final class MovingBox {
   Rectangle getBounds() {
     return bounds;
   }
+
+  /**
+ * Says whether this box overlaps another moving box, such as another goose.
+ *
+ * @param other the other box
+ * @return true if the two boxes overlap
+ */
+boolean overlaps(MovingBox other) {
+  return other != this && bounds.overlaps(other.bounds);
+}
 }
