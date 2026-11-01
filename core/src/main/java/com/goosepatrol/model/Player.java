@@ -1,6 +1,5 @@
 package com.goosepatrol.model;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,10 +20,16 @@ public class Player {
   private static final float ACCELERATION = GameConfig.STUDENT_MAX_SPEED / GameConfig.STUDENT_SPEED_UP_SECONDS;
   private static final float DECELERATION = GameConfig.STUDENT_MAX_SPEED / GameConfig.STUDENT_STOP_SECONDS;
 
-  private final Rectangle bounds;
+  /** The student's collision box, in map pixels, which moves and stops at walls. */
+  private final MovingBox body;
+
   private final Vector2 velocity = new Vector2();
   private final Vector2 direction = new Vector2();
   private Facing facing = Facing.DOWN;
+
+  // A boost such as the coffee (FR_PICKUP): the top speed is multiplied by speedBoost for boostSecondsLeft seconds.
+  private float speedBoost = 1;
+  private float boostSecondsLeft = 0;
 
   /**
    * Makes the student, standing still and facing down.
@@ -32,7 +37,7 @@ public class Player {
    * @param centre the centre of the student's starting place, such as the map's student start
    */
   public Player(Vector2 centre) {
-    bounds = new Rectangle(centre.x - WIDTH / 2, centre.y - HEIGHT / 2, WIDTH, HEIGHT);
+    body = new MovingBox(centre.x - WIDTH / 2, centre.y - HEIGHT / 2, WIDTH, HEIGHT);
   }
 
   /**
@@ -50,10 +55,29 @@ public class Player {
     if (direction.len2() > 1) {
       direction.nor(); // walking diagonally is no faster than walking straight
     }
-    velocity.x = approach(velocity.x, direction.x * GameConfig.STUDENT_MAX_SPEED, Math.abs(direction.x), delta);
-    velocity.y = approach(velocity.y, direction.y * GameConfig.STUDENT_MAX_SPEED, Math.abs(direction.y), delta);
-    moveX(velocity.x * delta, map);
-    moveY(velocity.y * delta, map);
+    float topSpeed = GameConfig.STUDENT_MAX_SPEED;
+    if (boostSecondsLeft > 0) {
+      topSpeed *= speedBoost;
+      boostSecondsLeft -= delta;
+    }
+    velocity.x = approach(velocity.x, direction.x * topSpeed, Math.abs(direction.x), delta);
+    velocity.y = approach(velocity.y, direction.y * topSpeed, Math.abs(direction.y), delta);
+    // A blocked move loses speed on that axis only, so the student slides along walls.
+    if (body.moveX(velocity.x * delta, map)) {
+      velocity.x = 0;
+    }
+    if (body.moveY(velocity.y * delta, map)) {
+      velocity.y = 0;
+    }
+  }
+
+  public void boostSpeed(float factor, float seconds) {
+    speedBoost = factor;
+    boostSecondsLeft = seconds;
+  }
+
+  public float getBoostSecondsLeft() {
+    return Math.max(0, boostSecondsLeft);
   }
 
   /**
@@ -104,53 +128,13 @@ public class Player {
     return speed + Math.signum(target - speed) * step;
   }
 
-  // Moves across, keeping the student inside the map and out of walls.
-  private void moveX(float dx, CampusMap map) {
-    if (dx == 0) {
-      return;
-    }
-    float oldX = bounds.x;
-    float wantedX = oldX + dx;
-    bounds.x = MathUtils.clamp(wantedX, 0, map.getWidth() - bounds.width);
-    Rectangle wall = map.wallOverlapping(bounds);
-    if (wall != null) {
-      bounds.x = dx > 0 ? wall.x - bounds.width : wall.x + wall.width; // right against the wall's near side
-      if (map.wallOverlapping(bounds) != null) {
-        bounds.x = oldX; // squeezed between two walls: stay where it was
-      }
-    }
-    if (bounds.x != wantedX) {
-      velocity.x = 0; // blocked: lose speed on this axis only, so the student slides along walls
-    }
-  }
-
-  // Moves up or down, the same way as moveX.
-  private void moveY(float dy, CampusMap map) {
-    if (dy == 0) {
-      return;
-    }
-    float oldY = bounds.y;
-    float wantedY = oldY + dy;
-    bounds.y = MathUtils.clamp(wantedY, 0, map.getHeight() - bounds.height);
-    Rectangle wall = map.wallOverlapping(bounds);
-    if (wall != null) {
-      bounds.y = dy > 0 ? wall.y - bounds.height : wall.y + wall.height;
-      if (map.wallOverlapping(bounds) != null) {
-        bounds.y = oldY;
-      }
-    }
-    if (bounds.y != wantedY) {
-      velocity.y = 0;
-    }
-  }
-
   /**
    * Returns the student's box.
    *
    * @return a copy of the box, in map pixels
    */
   public Rectangle getBounds() {
-    return new Rectangle(bounds);
+    return new Rectangle(body.getBounds());
   }
 
   /**
