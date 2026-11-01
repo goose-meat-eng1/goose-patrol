@@ -12,10 +12,10 @@ import com.badlogic.gdx.math.Vector2;
 public class GooseMan{
 
   /** The width of the goose man's box, in map pixels. */
-  public static final float WIDTH = 24;
+  public static final float WIDTH = 12;
 
   /** The height of the goose man's box, in map pixels. */
-  public static final float HEIGHT = 24;
+  public static final float HEIGHT = 12;
 
   /** The goose man's collision box, in map pixels, which moves and stops at walls. */
   private final MovingBox body;

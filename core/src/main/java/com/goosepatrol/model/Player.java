@@ -11,10 +11,10 @@ import com.badlogic.gdx.math.Vector2;
 public class Player {
 
   /** The width of the student's box, in map pixels. */
-  public static final float WIDTH = 24;
+  public static final float WIDTH = 12;
 
   /** The height of the student's box, in map pixels. */
-  public static final float HEIGHT = 24;
+  public static final float HEIGHT = 12;
 
   // How fast the speed rises and falls, in map pixels per second, each second.
   private static final float ACCELERATION = GameConfig.STUDENT_MAX_SPEED / GameConfig.STUDENT_SPEED_UP_SECONDS;
