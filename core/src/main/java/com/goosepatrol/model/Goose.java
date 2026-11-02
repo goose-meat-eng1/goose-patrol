@@ -68,8 +68,6 @@ public class Goose {
     if (body.moveY(velocity.y * delta, map, b -> blockingBox(b, map, flock))) {
       velocity.y = 0;
     }
-    velocity.x = 0;
-    velocity.y = 0;
   }
 
   // Solids block the goose, then other geese, so it stops flush against either.
