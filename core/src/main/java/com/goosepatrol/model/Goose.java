@@ -17,7 +17,7 @@ public class Goose {
   /** The height of the geese's box, in map pixels. */
   public static final float HEIGHT = 12;
 
-  public float gooseHunger = 3;
+  private float gooseHunger;
 
   /** The goose's collision box, in map pixels, which moves and stops at walls. */
   private final MovingBox body;
@@ -31,9 +31,9 @@ public class Goose {
    * 
    * @param centre the centre of the goose's starting place, such as one of the map's goose spawns
    */
-  public Goose(Vector2 centre, float gooseHunger){
+  public Goose(Vector2 centre){
     body = new MovingBox(centre.x - WIDTH / 2, centre.y - HEIGHT / 2, WIDTH, HEIGHT);
-    this.gooseHunger = gooseHunger;
+    this.gooseHunger = 3;
   }
 
   /**
@@ -47,25 +47,27 @@ public class Goose {
    * @param map the map, for its edges and solids and geese
    */
   public void update(Vector2 target, List<Goose> flock, float delta, CampusMap map) {
-    do{
-      Rectangle box = body.getBounds();
-      direction.set(target).sub(box.x + WIDTH / 2, box.y + HEIGHT / 2);
-      if (direction.len2() < 1) {
-        velocity.setZero(); // already at the target
-        return;
-      }
-      direction.nor();
-      facing = facingFor(direction, facing);
-      velocity.set(direction).scl(GameConfig.GOOSE_VELOCITY);
+    if (gooseHunger > 0){
+      velocity.setZero();
+      return;
+    }
+    Rectangle box = body.getBounds();
+    direction.set(target).sub(box.x + WIDTH / 2, box.y + HEIGHT / 2);
+    if (direction.len2() < 1) {
+      velocity.setZero(); // already at the target
+      return;
+    }
+    direction.nor();
+    facing = facingFor(direction, facing);
+    velocity.set(direction).scl(GameConfig.GOOSE_VELOCITY);
 
-      // Each axis separately, so a goose blocked across can still slide up or down.
-      if (body.moveX(velocity.x * delta, map, b -> blockingBox(b, map, flock))) {
-        velocity.x = 0;
-      }
-      if (body.moveY(velocity.y * delta, map, b -> blockingBox(b, map, flock))) {
-        velocity.y = 0;
-      }
-    } while (gooseHunger > 0);
+    // Each axis separately, so a goose blocked across can still slide up or down.
+    if (body.moveX(velocity.x * delta, map, b -> blockingBox(b, map, flock))) {
+      velocity.x = 0;
+    }
+    if (body.moveY(velocity.y * delta, map, b -> blockingBox(b, map, flock))) {
+      velocity.y = 0;
+    }
     velocity.x = 0;
     velocity.y = 0;
   }
@@ -99,8 +101,9 @@ public class Goose {
     }
   }
   return null;
-}
+  }
 
+  
   /**
    * Returns the goose's box.
    *
