@@ -1,6 +1,7 @@
 package com.goosepatrol.view;
 
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -19,10 +20,12 @@ public class GameScreen extends ScreenAdapter {
   private final Runnable readInput;
   private final SpriteBatch batch;
   private final Hud hud;
+  private final MapView mapView;
+  private final PlayerView playerView;
   private final Runnable onRunEnded;
 
-
   private final Viewport hudViewport = new ScreenViewport();
+  private final OrthographicCamera camera;
 
   /**
    * Makes the play screen for one run.
@@ -39,18 +42,32 @@ public class GameScreen extends ScreenAdapter {
     this.readInput = readInput;
     this.batch = batch;
     this.hud = new Hud(session, font);
+    this.mapView = new MapView(session);
+    this.playerView = new PlayerView(session);
     this.onRunEnded = onRunEnded;
+
+    this.camera = new OrthographicCamera(session.getMap().getWidth(), session.getMap().getHeight());
+    this.playerView.updateCameraPosition(camera);
   }
 
   @Override
   public void render(float delta) {
     readInput.run(); // FR_MOVE: read the held keys before the update
+
     session.update(delta); // D4: a frame starts with update(delta)
     if (session.getState() == RunState.ENDED) {
       onRunEnded.run(); // D3: ENDED shows the end screen
       return;
     }
+
+    // Update camera position to follow player
+    playerView.updateCameraPosition(camera);
+    
     ScreenUtils.clear(0.17f, 0.17f, 0.2f, 1f);
+
+    mapView.draw(camera);
+    playerView.draw(camera);
+
     hudViewport.apply();
     batch.setProjectionMatrix(hudViewport.getCamera().combined);
     batch.begin();
