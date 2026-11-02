@@ -2,6 +2,7 @@ package com.goosepatrol.view;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.goosepatrol.model.GameSession;
 import com.goosepatrol.model.GameConfig;
 
@@ -42,8 +43,8 @@ public class MapView {
     float mapWidth = session.getMap().getWidth() * GameConfig.MAP_SCALE;
     float mapHeight = session.getMap().getHeight() * GameConfig.MAP_SCALE;
 
-    cam.position.x = Math.clamp(cam.position.x, cam.viewportWidth / 2f, mapWidth - cam.viewportWidth / 2f);
-    cam.position.y = Math.clamp(cam.position.y, cam.viewportHeight / 2f, mapHeight - cam.viewportHeight / 2f);
+    cam.position.x = MathUtils.clamp(cam.position.x, cam.viewportWidth / 2f, mapWidth - cam.viewportWidth / 2f);
+    cam.position.y = MathUtils.clamp(cam.position.y, cam.viewportHeight / 2f, mapHeight - cam.viewportHeight / 2f);
 
     cam.update();
   }
