@@ -3,6 +3,7 @@ package com.goosepatrol.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ class GameSessionTest {
 
   @BeforeEach
   void newRun() {
-    CampusMap openGround = new CampusMap(1000, 1000, List.of(), START);
+    CampusMap openGround = new CampusMap(1000, 1000, List.of(), START, new TiledMap());
     session = new GameSession(new GameClock(300), openGround, new Player(START));
   }
 

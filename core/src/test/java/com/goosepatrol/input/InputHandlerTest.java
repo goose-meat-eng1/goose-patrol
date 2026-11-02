@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.goosepatrol.model.CampusMap;
 import com.goosepatrol.model.GameClock;
@@ -28,7 +29,7 @@ class InputHandlerTest {
 
   @BeforeEach
   void newRun() {
-    CampusMap openGround = new CampusMap(1000, 1000, List.of(), new Vector2(500, 500));
+    CampusMap openGround = new CampusMap(1000, 1000, List.of(), new Vector2(500, 500), new TiledMap());
     session = new GameSession(new GameClock(300), openGround, new Player(openGround.getStudentStart()));
     keys = new InputHandler(session, held::contains);
   }
