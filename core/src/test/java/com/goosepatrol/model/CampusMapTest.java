@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import java.util.List;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class CampusMapTest {
 
   private final Rectangle wall = new Rectangle(100, 100, 32, 32);
-  private final CampusMap map = new CampusMap(400, 300, List.of(wall), new Vector2(50, 60));
+  private final CampusMap map = new CampusMap(400, 300, List.of(wall), new Vector2(50, 60), new TiledMap());
 
   @Test
   @Tag("FR_MAP")

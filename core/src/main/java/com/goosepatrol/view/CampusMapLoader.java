@@ -64,7 +64,7 @@ public final class CampusMapLoader {
       throw new IllegalArgumentException("The map has no \"" + STUDENT_SPAWN + "\" point in its \"" + SPAWNS_LAYER
           + "\" layer");
     }
-    return new CampusMap(width, height, solids, deepWater, shallowWater, ((PointMapObject) student).getPoint());
+    return new CampusMap(width, height, solids, deepWater, shallowWater, ((PointMapObject) student).getPoint(), tiledMap);
   }
 
   private static MapLayers collisionLayers(TiledMap tiledMap) {

@@ -3,6 +3,7 @@ package com.goosepatrol.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import java.util.List;
@@ -15,7 +16,7 @@ class PlayerTest {
   private static final float MAX = GameConfig.STUDENT_MAX_SPEED;
   private static final float SPEED_UP = GameConfig.STUDENT_SPEED_UP_SECONDS;
   private static final Vector2 START = new Vector2(500, 500);
-  private static final CampusMap OPEN_GROUND = new CampusMap(1000, 1000, List.of(), START);
+  private static final CampusMap OPEN_GROUND = new CampusMap(1000, 1000, List.of(), START, new TiledMap());
 
   private static void hold(Player player, float x, float y, float seconds, CampusMap map) {
     int frames = Math.round(seconds * 60);
@@ -60,7 +61,7 @@ class PlayerTest {
   @Tag("FR_MAP")
   void stopsRightAgainstAWall() {
     Rectangle wall = new Rectangle(600, 400, 32, 200);
-    CampusMap map = new CampusMap(1000, 1000, List.of(wall), START);
+    CampusMap map = new CampusMap(1000, 1000, List.of(wall), START, new TiledMap());
     Player player = new Player(START);
     hold(player, 1, 0, 3, map);
 
