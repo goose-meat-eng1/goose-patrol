@@ -47,7 +47,7 @@ public class Goose {
    * @param map the map, for its edges and solids and geese
    */
   public void update(Vector2 target, List<Goose> flock, float delta, CampusMap map) {
-    if (gooseHunger > 0){
+    if (gooseHunger == 0){
       velocity.setZero();
       return;
     }
@@ -103,7 +103,7 @@ public class Goose {
   return null;
   }
 
-  
+
   /**
    * Returns the goose's box.
    *
