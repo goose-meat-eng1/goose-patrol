@@ -1,6 +1,5 @@
 package com.goosepatrol.model;
 
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import java.util.List;
@@ -21,8 +20,6 @@ public class CampusMap {
   private final List<Rectangle> deepWater;
   private final List<Rectangle> shallowWater;
 
-  private final TiledMap map;
-
   /**
    * Makes the map. The game builds it from the Tiled map with
    * {@code CampusMapLoader}; tests can build their own.
@@ -32,19 +29,18 @@ public class CampusMap {
    * @param solids        the walls the student can't walk through;
    * @param studentStart the centre of the student's starting place
    */
-  public CampusMap(float width, float height, List<Rectangle> solids, Vector2 studentStart, TiledMap map) {
-    this(width, height, solids, List.of(), List.of(), studentStart, map);
+  public CampusMap(float width, float height, List<Rectangle> solids, Vector2 studentStart) {
+    this(width, height, solids, List.of(), List.of(), studentStart);
   }
 
   public CampusMap(float width, float height, List<Rectangle> solids, List<Rectangle> deepWater,
-      List<Rectangle> shallowWater, Vector2 studentStart, TiledMap map) {
+      List<Rectangle> shallowWater, Vector2 studentStart) {
     this.width = width;
     this.height = height;
     this.solids = List.copyOf(solids);
     this.deepWater = List.copyOf(deepWater);
     this.shallowWater = List.copyOf(shallowWater);
     this.studentStart = new Vector2(studentStart);
-    this.map = map;
   }
 
   /** Finds a wall or deep water that a box overlaps: what stops the student (FR_MAP). */
@@ -110,12 +106,4 @@ public class CampusMap {
     return new Vector2(studentStart);
   }
 
-  /**
-   * Returns the map as a TiledMap object.
-   *
-   * @return a TiledMap object loaded by TmxMapLoader
-   */
-  public TiledMap getTiledMap() {
-    return map;
-  }
 }

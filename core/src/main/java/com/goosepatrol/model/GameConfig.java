@@ -34,6 +34,9 @@ public final class GameConfig {
   /** The constant velocity the geese will approach the player. (FR_GOOSE_MOVE)*/
   public static final float GOOSE_VELOCITY = 100f;
 
+  /** How many pieces of bread fill a goose (FR_FULLNESS). */
+  public static final int GOOSE_FULLNESS = 3;
+
   /** Scale for the map rendering. */
   public static final float MAP_SCALE = 8f;
 

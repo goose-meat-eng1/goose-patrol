@@ -63,14 +63,4 @@ final class MovingBox {
   Rectangle getBounds() {
     return bounds;
   }
-
-  /**
- * Says whether this box overlaps another moving box, such as another goose.
- *
- * @param other the other box
- * @return true if the two boxes overlap
- */
-boolean overlaps(MovingBox other) {
-  return other != this && bounds.overlaps(other.bounds);
-}
 }

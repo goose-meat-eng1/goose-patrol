@@ -29,10 +29,11 @@ public class PlayerView {
   public void updateCameraPosition(OrthographicCamera cam) {
     Player player = session.getPlayer();
     Rectangle playerBounds = player.getBounds();
-    cam.position.set(playerBounds.x * GameConfig.MAP_SCALE, playerBounds.y * GameConfig.MAP_SCALE, 0f);
+    cam.position.set((playerBounds.x + playerBounds.width / 2) * GameConfig.MAP_SCALE,
+        (playerBounds.y + playerBounds.height / 2) * GameConfig.MAP_SCALE, 0f);
     cam.update();
   }
-  
+
   /**
    * Draws the player on screen. Called in render function of GameScreen.
    * Currently using ShapeRenderer to draw a rectangle.
@@ -53,5 +54,9 @@ public class PlayerView {
         playerBounds.width * GameConfig.MAP_SCALE,
         playerBounds.height * GameConfig.MAP_SCALE);
     shapeRenderer.end();
+  }
+
+  public void dispose() {
+    shapeRenderer.dispose();
   }
 }

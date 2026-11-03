@@ -17,7 +17,7 @@ public class Goose {
   /** The height of the geese's box, in map pixels. */
   public static final float HEIGHT = 12;
 
-  private float gooseHunger;
+  private int fullness;
 
   /** The goose's collision box, in map pixels, which moves and stops at walls. */
   private final MovingBox body;
@@ -33,7 +33,6 @@ public class Goose {
    */
   public Goose(Vector2 centre){
     body = new MovingBox(centre.x - WIDTH / 2, centre.y - HEIGHT / 2, WIDTH, HEIGHT);
-    this.gooseHunger = 3;
   }
 
   /**
@@ -47,19 +46,25 @@ public class Goose {
    * @param map the map, for its edges and solids and geese
    */
   public void update(Vector2 target, List<Goose> flock, float delta, CampusMap map) {
-    if (gooseHunger == 0){
+    if (isFull()) {
       velocity.setZero();
       return;
     }
     Rectangle box = body.getBounds();
     direction.set(target).sub(box.x + WIDTH / 2, box.y + HEIGHT / 2);
-    if (direction.len2() < 1) {
+
+
+    float distance = direction.len();
+    if (distance < 1) {
       velocity.setZero(); // already at the target
       return;
     }
     direction.nor();
     facing = facingFor(direction, facing);
-    velocity.set(direction).scl(GameConfig.GOOSE_VELOCITY);
+    // Never step past the target: on a slow frame a full step would jump over it.
+    velocity.set(direction).scl(Math.min(GameConfig.GOOSE_VELOCITY, distance / delta));
+
+
 
     // Each axis separately, so a goose blocked across can still slide up or down.
     if (body.moveX(velocity.x * delta, map, b -> blockingBox(b, map, flock))) {
@@ -127,6 +132,21 @@ public class Goose {
    */
   public Facing getFacing() {
     return facing;
+  }
+
+  /** Feeds the goose one piece of bread (FR_FULLNESS). A full goose eats no more. */
+  public void feed() {
+    if (!isFull()) {
+      fullness++;
+    }
+  }
+
+  public boolean isFull() {
+    return fullness >= GameConfig.GOOSE_FULLNESS;
+  }
+
+  public int getFullness() {
+    return fullness;
   }
 
 }

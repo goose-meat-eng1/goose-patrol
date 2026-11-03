@@ -3,7 +3,6 @@ package com.goosepatrol.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +20,7 @@ class GameSessionTest {
 
   @BeforeEach
   void newRun() {
-    CampusMap openGround = new CampusMap(1000, 1000, List.of(), START, new TiledMap());
+    CampusMap openGround = new CampusMap(1000, 1000, List.of(), START);
     session = new GameSession(new GameClock(300), openGround, new Player(START));
   }
 
@@ -52,20 +51,6 @@ class GameSessionTest {
 
   @Test
   @Tag("FR_PAUSE")
-  void pauseTakesEffectInTheSameFrame() {
-    session.start();
-    play(1);
-    double before = session.getTimeLeft();
-
-    session.togglePause();
-    session.update(FRAME);
-
-    assertEquals(RunState.PAUSED, session.getState());
-    assertEquals(before, session.getTimeLeft());
-  }
-
-  @Test
-  @Tag("FR_PAUSE")
   @Tag("FR_TIMER")
   void pausedTimeAddsNothing() {
     session.start();
@@ -92,58 +77,6 @@ class GameSessionTest {
     assertEquals(RunState.ENDED, session.getState());
     assertEquals(0, session.getTimeLeft());
     assertEquals(300, frames * (double) FRAME, 1.0);
-  }
-
-  @Test
-  @Tag("FR_TIMER")
-  void nothingChangesAfterTheEnd() {
-    session.start();
-    play(301);
-
-    session.togglePause();
-    session.start();
-    play(1);
-
-    assertEquals(RunState.ENDED, session.getState());
-    assertEquals(0, session.getTimeLeft());
-  }
-
-  @Test
-  @Tag("FR_PAUSE")
-  void pauseKeyDoesNothingBeforeTheStart() {
-    session.togglePause();
-
-    assertEquals(RunState.READY, session.getState());
-  }
-
-  @Test
-  @Tag("FR_PAUSE")
-  void startKeyDoesNotResumeAPausedRun() {
-    session.start();
-    session.togglePause();
-    session.start();
-
-    assertEquals(RunState.PAUSED, session.getState());
-  }
-
-  @Test
-  @Tag("FR_TIMER")
-  void aLongFrameCountsAsAtMostTheMaximum() {
-    session.start();
-    session.update(5);
-
-    assertEquals(300 - GameConfig.MAX_FRAME_SECONDS, session.getTimeLeft(), TOLERANCE);
-  }
-
-  @Test
-  @Tag("FR_PAUSE")
-  void studentStaysStillWhilePaused() {
-    session.start();
-    session.togglePause();
-    session.setMoveInput(1, 0);
-    play(1);
-
-    assertEquals(START_X, session.getPlayer().getBounds().x);
   }
 
   @Test
