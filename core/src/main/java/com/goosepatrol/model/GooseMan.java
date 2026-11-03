@@ -70,7 +70,7 @@ public class GooseMan{
     }
 }
 
-  // Faces the way the goose walks across, keeping the old facing when it walks straight up or down.
+  // Faces the way the goose man walks across, keeping the old facing when it walks straight up or down.
   private static Facing facingFor(Vector2 direction, Facing current) {
     if (direction.x > 0) {
       return Facing.RIGHT;
@@ -92,7 +92,7 @@ public class GooseMan{
 
 
   /**
-   * Returns the goose's box.
+   * Returns the goose man's box.
    *
    * @return a copy of the box, in map pixels
    */
@@ -101,7 +101,7 @@ public class GooseMan{
   }
 
   /**
-   * Returns the goose's speed.
+   * Returns the goose man's speed.
    *
    * @return a copy of the speed, in map pixels per second
    */
@@ -110,7 +110,7 @@ public class GooseMan{
   }
 
   /**
-   * Returns which way the goose faces, which the view draws the goose by.
+   * Returns which way the goose man faces, which the view draws the goose man by.
    *
    * @return LEFT or RIGHT
    */
