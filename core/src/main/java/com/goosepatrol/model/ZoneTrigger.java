@@ -16,8 +16,8 @@ public class ZoneTrigger {
     this.spawnY = spawnY;
   }
 
-  public boolean isMet(MovingBox playerBox){
-    if (!triggered && area.overlaps(playerBox.getBounds())){
+  public boolean isMet(Rectangle playerBox){
+    if (!triggered && area.overlaps(playerBox)){
       triggered = true;
       return true;
     }
