@@ -11,6 +11,11 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class GooseMan{
 
+  public enum State {
+    RUNNING,
+    DEFEATED
+  }
+
   /** The width of the goose man's box, in map pixels. */
   public static final float WIDTH = 12;
 
@@ -20,6 +25,11 @@ public class GooseMan{
   /** The goose man's collision box, in map pixels, which moves and stops at walls. */
   private final MovingBox body;
 
+  /** Pieces of bread eaten so far. */
+  private int fullness;
+
+  private State state = State.RUNNING;
+  
   /** The point the goose man is walking to, in map pixels. */
   private final Vector2 target = new Vector2();
   private final Random random;
@@ -48,6 +58,12 @@ public class GooseMan{
    * @param map the map, for its edges and solids
    */
   public void update(float delta, CampusMap map) {
+    if (state == State.DEFEATED) {
+      velocity.x = 0;
+      velocity.y = 0;
+      return;
+    }
+
     Rectangle box = body.getBounds();
     direction.set(target).sub(box.x + WIDTH / 2, box.y + HEIGHT / 2);
     if (direction.len2() < 1) {
@@ -90,6 +106,32 @@ public class GooseMan{
     spot.getCenter(target);
   }
 
+
+  /** Feeds the goose man one piece, and returns true if that filled it, so it flies away (FR_FULLNESS). */
+  public boolean feed() {
+    if (state != State.RUNNING) {
+      return false;
+    }
+    fullness++;
+    if (!isFull()) {
+      return false;
+    }
+    state = State.DEFEATED;
+    return true;
+  }
+
+  /** Whether the goose has eaten all the bread it can (FR_FULLNESS). */
+  public boolean isFull() {
+    return fullness >= GameConfig.GOOSE_MAN_FULLNESS;
+  }
+
+  public int getFullness() {
+    return fullness;
+  }
+
+  public State getState() {
+    return state;
+  }
 
   /**
    * Returns the goose man's box.

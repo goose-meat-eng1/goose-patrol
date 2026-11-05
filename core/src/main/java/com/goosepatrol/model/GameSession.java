@@ -19,6 +19,9 @@ public class GameSession {
   private final CampusMap map;
   private final Player player;
 
+  /** Null until enough geese have been fed (FR_BOSS). */
+  private GooseMan gooseMan;
+
   /** Brings the geese in waves (FR_SPAWN); null means no geese, as in most tests. */
   private final GooseSpawner spawner;
 
@@ -33,6 +36,9 @@ public class GameSession {
   // FR_MOVE: the held movement keys, each -1, 0 or 1, set every frame by the input handler.
   private int moveX;
   private int moveY;
+
+  /** How many geese have been filled this run. */
+  private int geeseFed;
 
   /** Makes a run with no geese that waits for the start key, for tests. */
   public GameSession(GameClock clock, CampusMap map, Player player) {
@@ -88,6 +94,7 @@ public class GameSession {
     }
     player.update(moveX, moveY, frame, map);
     updateGeese(frame);
+    updateGooseMan(frame);
     updateBread(frame);
   }
 
@@ -104,6 +111,16 @@ public class GameSession {
     geese.removeIf(goose -> goose.getState() == Goose.State.GONE);
   }
 
+  private void updateGooseMan(float frame) {
+    if (gooseMan == null) {
+      if (spawner != null && geeseFed >= GameConfig.GOOSE_MAN_AFTER_GEESE) {
+        gooseMan = spawner.bringGooseMan(player.getBounds(), map, geese);
+      }
+      return;
+    }
+    gooseMan.update(frame,map);
+  }
+
   // Throws and moves the bread, and feeds the geese; a goose that gets full lays an egg (FR_BREAD, FR_FULLNESS).
   private void updateBread(float frame) {
     Bread thrown = dispenser.update(frame, player.getBounds(), geese, bread);
@@ -113,6 +130,7 @@ public class GameSession {
     for (Bread piece : bread) {
       Goose goose = piece.getTarget();
       if (piece.update(frame) && goose.feed()) {
+        geeseFed++;
         Rectangle box = goose.getBounds();
         eggs.add(new Egg(box.x + box.width / 2, box.y + box.height / 2));
       }
@@ -196,5 +214,13 @@ public class GameSession {
 
   public List<Egg> getEggs() {
     return Collections.unmodifiableList(eggs);
+  }
+
+  public GooseMan getGooseMan(){
+    return gooseMan;
+  }
+
+  public int getGeeseFed() {
+    return geeseFed;
   }
 }

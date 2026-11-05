@@ -16,7 +16,7 @@ public final class GameConfig {
   public static final float MAX_FRAME_SECONDS = 0.1f;
 
   /** The student's top speed, in map pixels per second (FR_MOVE). */
-  public static final float STUDENT_MAX_SPEED = 120f;
+  public static final float STUDENT_MAX_SPEED = 140f;
 
   /**
    * How long the student takes to go from standing still to full speed, in seconds (FR_MOVE). The speed rises
@@ -34,7 +34,7 @@ public final class GameConfig {
   public static final float GOOSE_VELOCITY = 100f;
 
   /** How many pieces of bread fill a goose (FR_FULLNESS). */
-  public static final int GOOSE_FULLNESS = 3;
+  public static final int GOOSE_FULLNESS = 2;
 
   /** How fast a full goose flies away, in map pixels per second (FR_FULLNESS). */
   public static final float GOOSE_FLY_SPEED = 220f;
@@ -74,6 +74,12 @@ public final class GameConfig {
 
   /** How close a goose must be for the dispenser to throw at it, in map pixels (FR_BREAD). */
   public static final float BREAD_RANGE = 200f;
+
+  /** How many pieces of bread fill a goose (FR_FULLNESS). */
+  public static final int GOOSE_MAN_FULLNESS = 3;
+
+  /** How many geese must be filled before the Goose Man arrives (FR_BOSS). */
+  public static final int GOOSE_MAN_AFTER_GEESE = 15;
 
   /** Scale for the map rendering. */
   public static final float MAP_SCALE = 8f;
