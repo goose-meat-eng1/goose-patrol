@@ -4,12 +4,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import java.util.List;
 
-/**
- * Goose movement (FR_GOOSE_MOVE),
- * Each goose will move at a constant speed towards the player from the position they spawn at,
- * Each goose has its own area it occupies and cannot be overlapping with other geese. 
- */
+/** A goose that chases the student, eats bread and flies away when full (FR_GOOSE_MOVE, FR_FULLNESS). */
 public class Goose {
+
+  /** What a goose is doing (FR_FULLNESS). */
+  public enum State {
+    CHASING,
+    FLYING_AWAY,
+    GONE
+  }
 
   /** The width of the geese's box, in map pixels. */
   public static final float WIDTH = 12;
@@ -17,43 +20,37 @@ public class Goose {
   /** The height of the geese's box, in map pixels. */
   public static final float HEIGHT = 12;
 
+  /** Pieces of bread eaten so far. */
   private int fullness;
+
+  private State state = State.CHASING;
+
+  /** Seconds spent flying away. */
+  private float flyingSeconds;
 
   /** The goose's collision box, in map pixels, which moves and stops at walls. */
   private final MovingBox body;
-  
+
   private final Vector2 velocity = new Vector2();
   private final Vector2 direction = new Vector2();
   private Facing facing = Facing.RIGHT;
 
-  /**
-   * Makes a goose, standing still and facing right.
-   * 
-   * @param centre the centre of the goose's starting place, such as one of the map's goose spawns
-   */
-  public Goose(Vector2 centre){
+  /** Makes a goose standing at a point, facing right. */
+  public Goose(Vector2 centre) {
     body = new MovingBox(centre.x - WIDTH / 2, centre.y - HEIGHT / 2, WIDTH, HEIGHT);
   }
 
-  /**
-   * Moves the goose by one frame. The goose turns to face the target, then walks towards it at
-   * {@link GameConfig#GOOSE_VELOCITY}, moves across and up, stopping at the map's edges and at walls 
-   * and other geese.
-   * 
-   * @param target the point to walk toward
-   * @param flock every goose on the map
-   * @param delta the frame's length in seconds
-   * @param map the map, for its edges and solids and geese
-   */
+  /** Moves the goose one frame: walks to the target, or flies away from it once full (FR_GOOSE_MOVE). */
   public void update(Vector2 target, List<Goose> flock, float delta, CampusMap map) {
-    if (isFull()) {
-      velocity.setZero();
+    if (state == State.FLYING_AWAY) {
+      flyAwayFrom(target, delta);
+      return;
+    }
+    if (state == State.GONE) {
       return;
     }
     Rectangle box = body.getBounds();
     direction.set(target).sub(box.x + WIDTH / 2, box.y + HEIGHT / 2);
-
-
     float distance = direction.len();
     if (distance < 1) {
       velocity.setZero(); // already at the target
@@ -64,14 +61,32 @@ public class Goose {
     // Never step past the target: on a slow frame a full step would jump over it.
     velocity.set(direction).scl(Math.min(GameConfig.GOOSE_VELOCITY, distance / delta));
 
-
-
     // Each axis separately, so a goose blocked across can still slide up or down.
     if (body.moveX(velocity.x * delta, map, b -> blockingBox(b, map, flock))) {
       velocity.x = 0;
     }
     if (body.moveY(velocity.y * delta, map, b -> blockingBox(b, map, flock))) {
       velocity.y = 0;
+    }
+  }
+
+  // Flies straight away from the target over everything, and is gone after GOOSE_FLY_SECONDS (FR_FULLNESS).
+  private void flyAwayFrom(Vector2 target, float delta) {
+    Rectangle box = body.getBounds();
+    if (flyingSeconds == 0) {
+      velocity.set(box.x + WIDTH / 2, box.y + HEIGHT / 2).sub(target);
+      if (velocity.isZero()) {
+        velocity.set(0, 1); // standing right on the target: fly straight up
+      }
+      velocity.nor().scl(GameConfig.GOOSE_FLY_SPEED);
+      facing = facingFor(velocity, facing);
+    }
+    // In the air, so no MovingBox: nothing stops it.
+    box.x += velocity.x * delta;
+    box.y += velocity.y * delta;
+    flyingSeconds += delta;
+    if (flyingSeconds >= GameConfig.GOOSE_FLY_SECONDS) {
+      state = State.GONE;
     }
   }
 
@@ -84,28 +99,61 @@ public class Goose {
     return gooseOverlapping(b, flock);
   }
 
-  // Faces the way the goose walks across, keeping the old facing when it walks straight up or down.
+  // Faces the way the goose moves across, keeping the old facing when it moves straight up or down.
   private static Facing facingFor(Vector2 direction, Facing current) {
     if (direction.x > 0) {
       return Facing.RIGHT;
     }
-      if (direction.x < 0) {
-        return Facing.LEFT;
-      }
-      return current;
+    if (direction.x < 0) {
+      return Facing.LEFT;
     }
-  
-  // The first other goose's box that overlaps box, or null. Boxes that only touch at an edge don't overlap.
-  private Rectangle gooseOverlapping(Rectangle box, List<Goose> flock) {
-  for (Goose other : flock) {
-    Rectangle otherBox = other.body.getBounds();
-    if (otherBox != box && otherBox.overlaps(box)) {
-      return otherBox;
-    }
-  }
-  return null;
+    return current;
   }
 
+  // The first other goose on the ground that overlaps box, or null.
+  private Rectangle gooseOverlapping(Rectangle box, List<Goose> flock) {
+    for (Goose other : flock) {
+      if (other != this && other.blocks(box)) {
+        return other.body.getBounds();
+      }
+    }
+    return null;
+  }
+
+  /** Whether this goose is in the box's way; only a goose on the ground is (FR_GOOSE_MOVE). */
+  public boolean blocks(Rectangle box) {
+    return state == State.CHASING && body.getBounds().overlaps(box);
+  }
+
+  /** Feeds the goose one piece, and returns true if that filled it, so it flies away (FR_FULLNESS). */
+  public boolean feed() {
+    if (state != State.CHASING) {
+      return false;
+    }
+    fullness++;
+    if (!isFull()) {
+      return false;
+    }
+    state = State.FLYING_AWAY;
+    return true;
+  }
+
+  /** Whether the goose has eaten all the bread it can (FR_FULLNESS). */
+  public boolean isFull() {
+    return fullness >= GameConfig.GOOSE_FULLNESS;
+  }
+
+  public int getFullness() {
+    return fullness;
+  }
+
+  public State getState() {
+    return state;
+  }
+
+  public float getFlyingSeconds() {
+    return flyingSeconds;
+  }
 
   /**
    * Returns the goose's box.
@@ -133,20 +181,4 @@ public class Goose {
   public Facing getFacing() {
     return facing;
   }
-
-  /** Feeds the goose one piece of bread (FR_FULLNESS). A full goose eats no more. */
-  public void feed() {
-    if (!isFull()) {
-      fullness++;
-    }
-  }
-
-  public boolean isFull() {
-    return fullness >= GameConfig.GOOSE_FULLNESS;
-  }
-
-  public int getFullness() {
-    return fullness;
-  }
-
 }

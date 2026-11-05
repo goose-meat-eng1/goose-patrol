@@ -25,10 +25,11 @@ public class GameScreen extends ScreenAdapter {
   private final Hud hud;
   private final MapView mapView;
   private final PlayerView playerView;
+  private final GooseView gooseView;
   private final Runnable onRunEnded;
 
-  private static final float VIEW_WIDTH = 320;
-  private static final float VIEW_HEIGHT = 180;
+  private static final float VIEW_WIDTH = 480;
+  private static final float VIEW_HEIGHT = 270;
 
   private final Viewport hudViewport = new ScreenViewport();
   private final OrthographicCamera camera = new OrthographicCamera();
@@ -50,6 +51,7 @@ public class GameScreen extends ScreenAdapter {
     this.hud = new Hud(session, font);
     this.mapView = new MapView(session, tiledMap);
     this.playerView = new PlayerView(session);
+    this.gooseView = new GooseView(session);
     this.onRunEnded = onRunEnded;
     this.playerView.updateCameraPosition(camera);
   }
@@ -72,7 +74,9 @@ public class GameScreen extends ScreenAdapter {
     worldViewport.apply();
 
     mapView.draw(camera);
+    gooseView.drawEggs(batch, camera);
     playerView.draw(camera);
+    gooseView.draw(batch, camera);
 
     hudViewport.apply();
     batch.setProjectionMatrix(hudViewport.getCamera().combined);
@@ -102,5 +106,6 @@ public class GameScreen extends ScreenAdapter {
   public void dispose() {
     mapView.dispose();
     playerView.dispose();
+    gooseView.dispose();
   }
 }

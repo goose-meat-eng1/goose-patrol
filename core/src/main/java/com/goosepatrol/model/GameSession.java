@@ -1,17 +1,31 @@
 package com.goosepatrol.model;
 
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * One run of the game, from the start prompt to the end screen (D2, D3).
  *
- * <p>It holds the run's {@link RunState}, its {@link GameClock}, the student and the map. {@link #update(float)}
- * changes them only while the run is PLAYING, so nothing moves while the run waits to start, is paused or has ended.
- * Later slices add the counters, the items, the events and the geese here.
+ * <p>It holds the run's {@link RunState}, its {@link GameClock}, the student, the map, the geese, the bread and the
+ * eggs. {@link #update(float)} changes them only while the run is PLAYING, so nothing moves while the run waits to
+ * start, is paused or has ended. Later slices add the counters, the items and the events here.
  */
 public class GameSession {
 
   private final GameClock clock;
   private final CampusMap map;
   private final Player player;
+
+  /** Brings the geese in waves (FR_SPAWN); null means no geese, as in most tests. */
+  private final GooseSpawner spawner;
+
+  private final BreadDispenser dispenser = new BreadDispenser();
+  private final List<Goose> geese = new ArrayList<>();
+  private final List<Bread> bread = new ArrayList<>();
+  private final List<Egg> eggs = new ArrayList<>();
 
   // FR_PAUSE: every run opens waiting for the start key.
   private RunState state = RunState.READY;
@@ -20,18 +34,17 @@ public class GameSession {
   private int moveX;
   private int moveY;
 
-  /**
-   * Makes a run that waits for the start key. The game builds runs with {@link GameSetup#newSession(CampusMap)};
-   * tests can pass in parts of their own.
-   *
-   * @param clock the clock for this run
-   * @param map the campus to play on
-   * @param player the student, at their starting place
-   */
+  /** Makes a run with no geese that waits for the start key, for tests. */
   public GameSession(GameClock clock, CampusMap map, Player player) {
+    this(clock, map, player, null);
+  }
+
+  /** Makes a run that waits for the start key. The game builds runs with {@link GameSetup#newSession(CampusMap)}. */
+  public GameSession(GameClock clock, CampusMap map, Player player, GooseSpawner spawner) {
     this.clock = clock;
     this.map = map;
     this.player = player;
+    this.spawner = spawner;
   }
 
   /**
@@ -58,8 +71,8 @@ public class GameSession {
 
   /**
    * Moves the run on by one frame (D4). Only a PLAYING run changes: the clock counts down, the run ends when the
-   * time is up (FR_TIMER), and otherwise the student moves (FR_MOVE). A frame longer than
-   * {@link GameConfig#MAX_FRAME_SECONDS} counts as that much.
+   * time is up (FR_TIMER), and otherwise the student, the geese and the bread move (FR_MOVE, FR_SPAWN, FR_BREAD). A
+   * frame longer than {@link GameConfig#MAX_FRAME_SECONDS} counts as that much.
    *
    * @param delta the frame's length in seconds, as libGDX gives it
    */
@@ -74,6 +87,37 @@ public class GameSession {
       return;
     }
     player.update(moveX, moveY, frame, map);
+    updateGeese(frame);
+    updateBread(frame);
+  }
+
+  // Brings in a wave when one is due, moves the geese, and drops the ones that have flown off (FR_SPAWN).
+  private void updateGeese(float frame) {
+    Rectangle student = player.getBounds();
+    if (spawner != null) {
+      geese.addAll(spawner.update(frame, student, map, geese));
+    }
+    Vector2 target = student.getCenter(new Vector2());
+    for (Goose goose : geese) {
+      goose.update(target, geese, frame, map);
+    }
+    geese.removeIf(goose -> goose.getState() == Goose.State.GONE);
+  }
+
+  // Throws and moves the bread, and feeds the geese; a goose that gets full lays an egg (FR_BREAD, FR_FULLNESS).
+  private void updateBread(float frame) {
+    Bread thrown = dispenser.update(frame, player.getBounds(), geese, bread);
+    if (thrown != null) {
+      bread.add(thrown);
+    }
+    for (Bread piece : bread) {
+      Goose goose = piece.getTarget();
+      if (piece.update(frame) && goose.feed()) {
+        Rectangle box = goose.getBounds();
+        eggs.add(new Egg(box.x + box.width / 2, box.y + box.height / 2));
+      }
+    }
+    bread.removeIf(Bread::isGone);
   }
 
   /**
@@ -140,5 +184,17 @@ public class GameSession {
    */
   public CampusMap getMap() {
     return map;
+  }
+
+  public List<Goose> getGeese() {
+    return Collections.unmodifiableList(geese);
+  }
+
+  public List<Bread> getBread() {
+    return Collections.unmodifiableList(bread);
+  }
+
+  public List<Egg> getEggs() {
+    return Collections.unmodifiableList(eggs);
   }
 }

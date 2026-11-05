@@ -1,8 +1,7 @@
 package com.goosepatrol.model;
 
 /**
- * Named numbers for tuning the game, each with the requirement it serves. Later slices add the calm start and the
- * gap between geese here.
+ * Named numbers for tuning the game, each with the requirement it serves.
  */
 public final class GameConfig {
 
@@ -36,6 +35,45 @@ public final class GameConfig {
 
   /** How many pieces of bread fill a goose (FR_FULLNESS). */
   public static final int GOOSE_FULLNESS = 3;
+
+  /** How fast a full goose flies away, in map pixels per second (FR_FULLNESS). */
+  public static final float GOOSE_FLY_SPEED = 220f;
+
+  /** How long a full goose flies before it is gone, in seconds (FR_FULLNESS). */
+  public static final float GOOSE_FLY_SECONDS = 2f;
+
+  /** Seconds with no geese at the start of a run (FR_SPAWN). */
+  public static final float CALM_START_SECONDS = 10f;
+
+  /** How many geese the first wave brings (FR_SPAWN). */
+  public static final int FIRST_WAVE_SIZE = 3;
+
+  /** How many more geese each wave brings (FR_SPAWN). */
+  public static final int WAVE_GROWTH = 1;
+
+  /** Seconds between the first wave and the second (FR_SPAWN). */
+  public static final float FIRST_WAVE_GAP = 10f;
+
+  /** How many seconds shorter each gap between waves gets (FR_SPAWN). */
+  public static final float WAVE_GAP_SHRINK = 0.5f;
+
+  /** The shortest gap between waves, in seconds (FR_SPAWN). */
+  public static final float MIN_WAVE_GAP = 5f;
+
+  /** The most geese on the map at once (FR_SPAWN, NFR_PERFORMANCE). */
+  public static final int MAX_GEESE = 100;
+
+  /** How far from the student a goose arrives, in map pixels, so off screen (FR_SPAWN). */
+  public static final float SPAWN_DISTANCE = 360f;
+
+  /** Seconds between two pieces of bread (FR_BREAD). */
+  public static final float BREAD_GAP_SECONDS = 0.5f;
+
+  /** How fast bread flies, in map pixels per second (FR_BREAD). */
+  public static final float BREAD_SPEED = 240f;
+
+  /** How close a goose must be for the dispenser to throw at it, in map pixels (FR_BREAD). */
+  public static final float BREAD_RANGE = 200f;
 
   /** Scale for the map rendering. */
   public static final float MAP_SCALE = 8f;
