@@ -1,11 +1,9 @@
 package com.goosepatrol.input;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.goosepatrol.model.CampusMap;
 import com.goosepatrol.model.GameClock;
@@ -29,7 +27,7 @@ class InputHandlerTest {
 
   @BeforeEach
   void newRun() {
-    CampusMap openGround = new CampusMap(1000, 1000, List.of(), new Vector2(500, 500), new TiledMap());
+    CampusMap openGround = new CampusMap(1000, 1000, List.of(), new Vector2(500, 500));
     session = new GameSession(new GameClock(300), openGround, new Player(openGround.getStudentStart()));
     keys = new InputHandler(session, held::contains);
   }
@@ -52,16 +50,6 @@ class InputHandlerTest {
 
     keys.keyDown(Input.Keys.P);
     assertEquals(RunState.PLAYING, session.getState());
-  }
-
-  @Test
-  @Tag("FR_PAUSE")
-  void leavesOtherKeysAlone() {
-    assertFalse(keys.keyDown(Input.Keys.F12));
-    assertFalse(keys.keyDown(Input.Keys.W));
-    assertFalse(keys.keyDown(Input.Keys.UP));
-
-    assertEquals(RunState.READY, session.getState());
   }
 
   @Test

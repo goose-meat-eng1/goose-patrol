@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * GooseMan (FR_BOSS),
+ * GooseMan movement (FR_EVENT_HIDDEN, FR_BOSS),
  * The Goose Man will move at the same velocity as other geese towards a random point on the map,
  * then when it gets to a point, it changes the target point
  */

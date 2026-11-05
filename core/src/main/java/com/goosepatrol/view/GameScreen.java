@@ -4,9 +4,12 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.goosepatrol.model.GameConfig;
 import com.goosepatrol.model.GameSession;
 import com.goosepatrol.model.RunState;
 
@@ -24,8 +27,12 @@ public class GameScreen extends ScreenAdapter {
   private final PlayerView playerView;
   private final Runnable onRunEnded;
 
+  private static final float VIEW_WIDTH = 320;
+  private static final float VIEW_HEIGHT = 180;
+
   private final Viewport hudViewport = new ScreenViewport();
-  private final OrthographicCamera camera;
+  private final OrthographicCamera camera = new OrthographicCamera();
+  private final Viewport worldViewport = new FitViewport(VIEW_WIDTH * GameConfig.MAP_SCALE, VIEW_HEIGHT * GameConfig.MAP_SCALE, camera);
 
   /**
    * Makes the play screen for one run.
@@ -36,17 +43,14 @@ public class GameScreen extends ScreenAdapter {
    * @param font the shared font to write with
    * @param onRunEnded called once, when the run has ended, to show the end screen
    */
-  public GameScreen(
-      GameSession session, Runnable readInput, SpriteBatch batch, BitmapFont font, Runnable onRunEnded) {
+  public GameScreen(GameSession session, Runnable readInput,TiledMap tiledMap, SpriteBatch batch, BitmapFont font, Runnable onRunEnded) {
     this.session = session;
     this.readInput = readInput;
     this.batch = batch;
     this.hud = new Hud(session, font);
-    this.mapView = new MapView(session);
+    this.mapView = new MapView(session, tiledMap);
     this.playerView = new PlayerView(session);
     this.onRunEnded = onRunEnded;
-
-    this.camera = new OrthographicCamera(session.getMap().getWidth(), session.getMap().getHeight());
     this.playerView.updateCameraPosition(camera);
   }
 
@@ -65,6 +69,8 @@ public class GameScreen extends ScreenAdapter {
     
     ScreenUtils.clear(0.17f, 0.17f, 0.2f, 1f);
 
+    worldViewport.apply();
+
     mapView.draw(camera);
     playerView.draw(camera);
 
@@ -77,6 +83,7 @@ public class GameScreen extends ScreenAdapter {
 
   @Override
   public void resize(int width, int height) {
+    worldViewport.update(width, height);
     hudViewport.update(width, height, true);
   }
 
@@ -89,5 +96,11 @@ public class GameScreen extends ScreenAdapter {
     if (session.getState() == RunState.PLAYING) {
       session.togglePause();
     }
+  }
+
+  @Override
+  public void dispose() {
+    mapView.dispose();
+    playerView.dispose();
   }
 }

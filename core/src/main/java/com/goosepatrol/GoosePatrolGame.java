@@ -52,7 +52,7 @@ public class GoosePatrolGame extends Game {
     GameSession session = GameSetup.newSession(campusMap);
     InputHandler keys = new InputHandler(session, Gdx.input::isKeyPressed);
     Gdx.input.setInputProcessor(keys);
-    setScreen(new GameScreen(session, keys::readMovement, batch, font, this::showEndScreen));
+    setScreen(new GameScreen(session, keys::readMovement, tiledMap, batch, font, this::showEndScreen));
   }
 
   /** Swaps the play screen for the end screen once the run has ended (FR_SCREENS). */
