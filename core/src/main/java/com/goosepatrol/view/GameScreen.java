@@ -77,6 +77,7 @@ public class GameScreen extends ScreenAdapter {
 
     mapView.draw(camera);
     gooseView.drawEggs(batch, camera);
+    gooseManView.draw(batch, camera);
     playerView.draw(batch, camera);
     gooseView.draw(batch, camera);
 
