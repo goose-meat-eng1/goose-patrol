@@ -28,7 +28,7 @@ class InputHandlerTest {
   @BeforeEach
   void newRun() {
     CampusMap openGround = new CampusMap(1000, 1000, List.of(), new Vector2(500, 500));
-    session = new GameSession(new GameClock(300), openGround, new Player(openGround.getStudentStart()));
+    session = new GameSession(new GameClock(300), openGround, new Player(openGround.getStudentStart()), null);
     keys = new InputHandler(session, held::contains);
   }
 

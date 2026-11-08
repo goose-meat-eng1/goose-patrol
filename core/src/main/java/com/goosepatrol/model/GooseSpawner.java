@@ -79,4 +79,14 @@ public class GooseSpawner {
     }
     return false;
   }
+
+  /**
+ * Brings the Goose Man in off screen, the way a goose arrives (FR_BOSS).
+ *
+ * @return the Goose Man, or null if no clear place was found this frame
+ */
+  public GooseMan bringGooseMan(Rectangle student, CampusMap map, List<Goose> geese) {
+    Vector2 place = arrivalPlace(student, map, geese, List.of());
+    return place == null ? null : new GooseMan(place, map, random);
+  }
 }
