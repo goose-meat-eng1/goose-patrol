@@ -77,13 +77,12 @@ public class GameScreen extends ScreenAdapter {
 
     mapView.draw(camera);
     gooseView.drawEggs(batch, camera);
-    gooseManView.draw(batch, camera);
-    playerView.draw(camera);
+    playerView.draw(batch, camera);
     gooseView.draw(batch, camera);
 
     hudViewport.apply();
     batch.setProjectionMatrix(hudViewport.getCamera().combined);
-    batch.begin();
+    batch.begin();    
     hud.draw(batch, hudViewport.getWorldWidth(), hudViewport.getWorldHeight());
     batch.end();
   }
