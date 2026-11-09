@@ -9,8 +9,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
- * Shows why the run ended (D1, FR_SCREENS). In A1 the only reason is that the time is up. Slices 3 and 4 add the
- * counters here.
+ * Shows why the run ended (FR_SCREENS).
  */
 public class EndScreen extends ScreenAdapter {
 
@@ -20,9 +19,6 @@ public class EndScreen extends ScreenAdapter {
 
   /**
    * Makes the end screen.
-   *
-   * @param batch the shared batch to draw with
-   * @param font the shared font to write with
    */
   public EndScreen(SpriteBatch batch, BitmapFont font) {
     this.batch = batch;

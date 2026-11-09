@@ -32,9 +32,6 @@ public class Hud {
 
   /**
    * Makes the HUD for one run.
-   *
-   * @param session the run to show
-   * @param font the font to write with
    */
   public Hud(GameSession session, BitmapFont font) {
     this.session = session;
@@ -42,11 +39,7 @@ public class Hud {
   }
 
   /**
-   * Draws the HUD. Call draw between {@code batch.begin()} and {@code batch.end()}.
-   *
-   * @param batch the batch to draw with
-   * @param width the width of the area, in pixels
-   * @param height the height of the area, in pixels
+   * Draws the HUD. Call draw between batch.begin() and  batch.end().
    */
   public void draw(SpriteBatch batch, float width, float height) {
     // Draw remaining time and the start/pause message
@@ -88,8 +81,6 @@ public class Hud {
 
   /**
    * Formats seconds as m:ss.
-   * @param seconds the time left in seconds
-   * @return  string representing the time as minutes and seconds, such as 4:59
    */
   static String formatTime(double seconds) {
     int whole = (int) Math.ceil(seconds);
@@ -97,10 +88,8 @@ public class Hud {
   }
 
   /**
-   * Returns the message for a state: the start prompt or the paused message (FR_PAUSE).
-   *
-   * @param state the state of the run
-   * @return the message, or an empty string while playing
+   * Returns the start prompt or the paused message for a state (FR_PAUSE)..
+  
    */
   static String messageFor(RunState state) {
     return switch (state) {

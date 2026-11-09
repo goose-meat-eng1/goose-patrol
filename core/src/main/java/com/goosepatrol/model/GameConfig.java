@@ -5,7 +5,7 @@ package com.goosepatrol.model;
  */
 public final class GameConfig {
 
-  /** The length of one run in seconds: 5:00 (FR_TIMER). */
+  /** The length of one run in seconds, 300 for 5:00 (FR_TIMER). */
   public static final float RUN_SECONDS = 5 * 60f;
 
   /**
@@ -15,28 +15,35 @@ public final class GameConfig {
    */
   public static final float MAX_FRAME_SECONDS = 0.1f;
 
-  /** The student's top speed, in map pixels per second (FR_MOVE). */
+  /** The student's top speed, per second (FR_MOVE). */
   public static final float STUDENT_MAX_SPEED = 140f;
 
   /**
-   * How long the student takes to go from standing still to full speed, in seconds (FR_MOVE). The speed rises
-   * evenly, so it is half of full speed after half this time, in any direction and at any frame rate.
+   * How long the student takes to go from standing still to full speed, in seconds (FR_MOVE).
    */
   public static final float STUDENT_SPEED_UP_SECONDS = 0.5f;
 
+
+  /** How big the student is drawn, the collision box stays the same. */
+  public static final float DRAW_SCALE = 0.75f;
+
+
   /**
    * How long the student takes to stop from full speed, in seconds (FR_MOVE). Turning back sheds speed at the same
-   * rate. At 0.5 s the student slides about 30 map pixels after the keys are let go.
+   * rate.
    */
   public static final float STUDENT_STOP_SECONDS = 0.5f;
 
   /** The constant velocity the geese will approach the player. (FR_GOOSE_MOVE)*/
   public static final float GOOSE_VELOCITY = 100f;
 
+   /** The chance a new goose is white*/
+  public static final float WHITE_GOOSE_CHANCE = 0.25f;
+
   /** How many pieces of bread fill a goose (FR_FULLNESS). */
   public static final int GOOSE_FULLNESS = 2;
 
-  /** How fast a full goose flies away, in map pixels per second (FR_FULLNESS). */
+  /** How fast a full goose flies away, per second (FR_FULLNESS). */
   public static final float GOOSE_FLY_SPEED = 220f;
 
   /** How long a full goose flies before it is gone, in seconds (FR_FULLNESS). */
@@ -44,6 +51,13 @@ public final class GameConfig {
 
   /** Seconds with no geese at the start of a run (FR_SPAWN). */
   public static final float CALM_START_SECONDS = 10f;
+
+  // TODO: unused until stuck geese and the Goose Man turn away from walls (MovingBox, Goose, GooseMan).
+  /** How far a stuck goose or Goose Man walks after turning away from a wall,  (FR_GOOSE_MOVE). */
+  public static final float GOOSE_TURN_DISTANCE = 48f;
+
+  /** If the Goose Man is in range, the dispenser throws in rounds of GOOSE_MAN_ROUND_THROWS. */
+  public static final int GOOSE_MAN_ROUND_THROWS = 3;
 
   /** How many geese the first wave brings (FR_SPAWN). */
   public static final int FIRST_WAVE_SIZE = 3;
@@ -63,19 +77,19 @@ public final class GameConfig {
   /** The most geese on the map at once (FR_SPAWN, NFR_PERFORMANCE). */
   public static final int MAX_GEESE = 100;
 
-  /** How far from the student a goose arrives, in map pixels, so off screen (FR_SPAWN). */
+  /** How far from the student a goose arrives, so off screen (FR_SPAWN). */
   public static final float SPAWN_DISTANCE = 360f;
 
   /** Seconds between two pieces of bread (FR_BREAD). */
   public static final float BREAD_GAP_SECONDS = 0.5f;
 
-  /** How fast bread flies, in map pixels per second (FR_BREAD). */
+  /** How fast bread flies,  per second (FR_BREAD). */
   public static final float BREAD_SPEED = 240f;
 
-  /** How close a goose must be for the dispenser to throw at it, in map pixels (FR_BREAD). */
+  /** How close a goose must be for the dispenser to throw at it, (FR_BREAD). */
   public static final float BREAD_RANGE = 200f;
 
-  /** How many pieces of bread fill a goose (FR_FULLNESS). */
+  /** How many pieces of bread fill the Goose Man (FR_BOSS). */
   public static final int GOOSE_MAN_FULLNESS = 3;
 
   /** How many geese must be filled before the Goose Man arrives (FR_BOSS). */

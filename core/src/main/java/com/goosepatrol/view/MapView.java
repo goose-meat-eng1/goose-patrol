@@ -9,8 +9,6 @@ import com.goosepatrol.model.GameConfig;
 
 /**
  * Renders the CampusMap loaded in the current session
- * 
- * @param session the run to show
  */
 public class MapView {
 
@@ -24,8 +22,6 @@ public class MapView {
 
   /**
    * Draws the map. Called in render function of GameScreen.
-   * 
-   * @param cam the camera to use for rendering
    */
   public void draw(OrthographicCamera cam) {
     constrainCamera(cam);
@@ -36,8 +32,6 @@ public class MapView {
   /**
    * Constrains the camera to the bounds of the map so that out-of-bounds areas
    * are not visible when the player approaches the edge.
-   * 
-   * @param cam the camera to constrain
    */
   private void constrainCamera(OrthographicCamera cam) {
     float mapWidth = session.getMap().getWidth() * GameConfig.MAP_SCALE;

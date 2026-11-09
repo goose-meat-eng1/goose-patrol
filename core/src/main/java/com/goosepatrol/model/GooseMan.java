@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * GooseMan movement (FR_EVENT_HIDDEN, FR_BOSS),
+ * GooseMan movement (FR_BOSS),
  * The Goose Man will move at the same velocity as other geese towards a random point on the map,
  * then when it gets to a point, it changes the target point
  */
-public class GooseMan{
+public class GooseMan implements Feedable{
 
   public enum State {
     RUNNING,
@@ -52,10 +52,6 @@ public class GooseMan{
   /**
    * Moves the goose man by one frame. The goose man turns to face the target point, then walks towards it at
    * {@link GameConfig#GOOSE_VELOCITY}, moves across and up, stopping at the map's edges and at walls.
-   * 
-   * @param target the point to walk toward
-   * @param delta the frame's length in seconds
-   * @param map the map, for its edges and solids
    */
   public void update(float delta, CampusMap map) {
     if (state == State.DEFEATED) {
@@ -82,7 +78,7 @@ public class GooseMan{
       velocity.y = 0;
     }
     if (velocity.x == 0 || velocity.y == 0) {
-      pickTarget(map); // stuck against a wall: give up on this point
+      pickTarget(map); 	// stuck against a wall, so give up on this point
     }
 }
 
@@ -125,6 +121,17 @@ public class GooseMan{
     return fullness >= GameConfig.GOOSE_MAN_FULLNESS;
   }
 
+  /** If the Goose Man is still running, so he can eat (FR_BOSS). */
+  @Override
+  public boolean canEat() {
+    return state == State.RUNNING;
+  }
+
+  @Override
+  public int getMaxFullness() {
+    return GameConfig.GOOSE_MAN_FULLNESS;
+  }
+
   public int getFullness() {
     return fullness;
   }
@@ -142,20 +149,11 @@ public class GooseMan{
     return new Rectangle(body.getBounds());
   }
 
-  /**
-   * Returns the goose man's speed.
-   *
-   * @return a copy of the speed, in map pixels per second
-   */
+
   public Vector2 getVelocity() {
     return new Vector2(velocity);
   }
 
-  /**
-   * Returns which way the goose man faces, which the view draws the goose man by.
-   *
-   * @return LEFT or RIGHT
-   */
   public Facing getFacing() {
     return facing;
   }

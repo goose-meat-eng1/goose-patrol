@@ -3,9 +3,8 @@ package com.goosepatrol.model;
 import java.util.Random;
 
 /**
- * Builds each new run with everything it starts with (D2): the 5:00 clock, the student at the map's starting place,
- * and the geese's waves (FR_SPAWN). Later slices add the items and the events here, so adding one changes only this
- * class (NFR_MAINTAIN).
+ * Builds each new run with everything it starts wit the 5:00 clock, the student at the map's starting place,
+ * and the geese's waves (FR_SPAWN).
  */
 public final class GameSetup {
 
@@ -14,9 +13,6 @@ public final class GameSetup {
 
   /**
    * Builds a new run on a map, waiting for the start key (FR_PAUSE).
-   *
-   * @param map the campus to play on
-   * @return the new run
    */
   public static GameSession newSession(CampusMap map) {
     return new GameSession(new GameClock(GameConfig.RUN_SECONDS), map, new Player(map.getStudentStart()),

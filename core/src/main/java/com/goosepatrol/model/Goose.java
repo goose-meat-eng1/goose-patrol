@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.List;
 
 /** A goose that chases the student, eats bread and flies away when full (FR_GOOSE_MOVE, FR_FULLNESS). */
-public class Goose {
+public class Goose implements Feedable {
 
   /** What a goose is doing (FR_FULLNESS). */
   public enum State {
@@ -34,13 +34,15 @@ public class Goose {
   private final Vector2 velocity = new Vector2();
   private final Vector2 direction = new Vector2();
   private Facing facing = Facing.RIGHT;
+  private final GooseKind kind;
 
   /** Makes a goose standing at a point, facing right. */
-  public Goose(Vector2 centre) {
+  public Goose(Vector2 centre, GooseKind kind) {
     body = new MovingBox(centre.x - WIDTH / 2, centre.y - HEIGHT / 2, WIDTH, HEIGHT);
+    this.kind = kind;
   }
 
-  /** Moves the goose one frame: walks to the target, or flies away from it once full (FR_GOOSE_MOVE). */
+  /** Moves the goose one frame. It walks to the target, or flies away from it once full (FR_GOOSE_MOVE). */
   public void update(Vector2 target, List<Goose> flock, float delta, CampusMap map) {
     if (state == State.FLYING_AWAY) {
       flyAwayFrom(target, delta);
@@ -58,7 +60,7 @@ public class Goose {
     }
     direction.nor();
     facing = facingFor(direction, facing);
-    // Never step past the target: on a slow frame a full step would jump over it.
+    // Never step past the target, as on a slow frame a full step would jump over it.
     velocity.set(direction).scl(Math.min(GameConfig.GOOSE_VELOCITY, distance / delta));
 
     // Each axis separately, so a goose blocked across can still slide up or down.
@@ -76,12 +78,12 @@ public class Goose {
     if (flyingSeconds == 0) {
       velocity.set(box.x + WIDTH / 2, box.y + HEIGHT / 2).sub(target);
       if (velocity.isZero()) {
-        velocity.set(0, 1); // standing right on the target: fly straight up
+        velocity.set(0, 1); // standing right on the target, so fly straight up
       }
       velocity.nor().scl(GameConfig.GOOSE_FLY_SPEED);
       facing = facingFor(velocity, facing);
     }
-    // In the air, so no MovingBox: nothing stops it.
+    	// In the air, so no MovingBox, and nothing stops it.
     box.x += velocity.x * delta;
     box.y += velocity.y * delta;
     flyingSeconds += delta;
@@ -143,6 +145,17 @@ public class Goose {
     return fullness >= GameConfig.GOOSE_FULLNESS;
   }
 
+  /** If the goose is still on the ground, so it can eat (FR_FULLNESS). */
+  @Override
+  public boolean canEat() {
+    return state == State.CHASING;
+  }
+
+  @Override
+  public int getMaxFullness() {
+    return GameConfig.GOOSE_FULLNESS;
+  }
+
   public int getFullness() {
     return fullness;
   }
@@ -155,30 +168,19 @@ public class Goose {
     return flyingSeconds;
   }
 
-  /**
-   * Returns the goose's box.
-   *
-   * @return a copy of the box, in map pixels
-   */
   public Rectangle getBounds() {
     return new Rectangle(body.getBounds());
   }
 
-  /**
-   * Returns the goose's speed.
-   *
-   * @return a copy of the speed, in map pixels per second
-   */
   public Vector2 getVelocity() {
     return new Vector2(velocity);
   }
 
-  /**
-   * Returns which way the goose faces, which the view draws the goose by.
-   *
-   * @return LEFT or RIGHT
-   */
   public Facing getFacing() {
     return facing;
+  }
+
+  public GooseKind getKind() {
+    return kind;
   }
 }

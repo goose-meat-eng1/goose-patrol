@@ -9,12 +9,12 @@ public class Bread {
   /** The middle of the bread, in map pixels. */
   private final Vector2 middle;
 
-  private final Goose target;
+  private final Feedable target;
   private final Vector2 way = new Vector2();
   private boolean gone;
 
   /** Throws a piece from a point, in map pixels, at a goose (FR_BREAD). */
-  public Bread(Vector2 from, Goose target) {
+  public Bread(Vector2 from, Feedable target) {
     this.middle = new Vector2(from);
     this.target = target;
   }
@@ -24,7 +24,7 @@ public class Bread {
     if (gone) {
       return false;
     }
-    if (target.getState() != Goose.State.CHASING) {
+    if (!target.canEat()) {
       gone = true; // the goose is already full and flying off, so nobody eats this piece
       return false;
     }
@@ -41,7 +41,7 @@ public class Bread {
     return false;
   }
 
-  public Goose getTarget() {
+  public Feedable getTarget() {
     return target;
   }
 

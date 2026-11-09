@@ -9,13 +9,8 @@ import com.goosepatrol.model.RunState;
 import java.util.function.IntPredicate;
 
 /**
- * Turns keys into commands on the run (D1). libGDX calls {@link #keyDown(int)} before the frame's update, so a
+ * Turns keys into commands on the run. libGDX calls keyDown before the frame's update, so a
  * pause takes effect in the same frame (FR_PAUSE).
- *
- * <p>The movement keys are not handled as key events. {@link #readMovement()} reads which of them are held once
- * per frame and passes the direction to {@link GameSession#setMoveInput(int, int)} (FR_MOVE). A key let go while
- * the window is in the background never sends keyUp, so tracking events could leave the student walking; reading
- * the held keys each frame cannot. Slice 4 adds the number keys for items.
  */
 public class InputHandler extends InputAdapter {
 
@@ -58,9 +53,6 @@ public class InputHandler extends InputAdapter {
   /**
    * Makes the key handler for one run.
    *
-   * @param session the run the keys control
-   * @param isHeld tells whether a key is held down; the game passes {@code Gdx.input::isKeyPressed}, and tests
-   *     pass their own
    */
   public InputHandler(GameSession session, IntPredicate isHeld) {
     this.session = session;
@@ -70,8 +62,6 @@ public class InputHandler extends InputAdapter {
   /**
    * Handles one key press.
    *
-   * @param keycode the key, as one of libGDX's {@link Input.Keys}
-   * @return true if the key was used
    */
   @Override
   public boolean keyDown(int keycode) {
@@ -99,8 +89,8 @@ public class InputHandler extends InputAdapter {
   }
 
   /**
-   * Reads the held movement keys and passes the direction to the run (FR_MOVE). Call it once per frame, before
-   * {@link GameSession#update(float)}. Each of x and y is -1, 0 or 1; opposite keys cancel, so holding left and
+   * Reads the held movement keys and passes the direction to the run (FR_MOVE). Call it once per frame, before GameSession.update.
+   *  Each of x and y is -1, 0 or 1 opposite keys cancel, so holding left and
    * right gives x = 0.
    */
   public void readMovement() {
