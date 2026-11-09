@@ -71,7 +71,12 @@ public class Hud {
 
     if (session.getInventory().getItemCount(Items.BREAD) > 0) {
       batch.draw(breadItemTexture, inventoryX + INVENTORY_SCALE + itemGap, inventoryY + INVENTORY_SCALE, itemSize, itemSize);
-      font.draw(batch, "2 (x" + session.getInventory().getItemCount(Items.BREAD) + ")", inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
+
+      float boostTime = session.getDispenser().getDispenseBoostSecondsRemaining();
+      if (boostTime == 0)
+        font.draw(batch, "2 (x" + session.getInventory().getItemCount(Items.BREAD) + ")", inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
+      else
+        font.draw(batch, formatTime(boostTime), inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
     }
   }
 

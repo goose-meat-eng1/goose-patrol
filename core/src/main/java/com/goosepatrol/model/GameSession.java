@@ -165,7 +165,13 @@ public class GameSession {
           }
           break;
         case BREAD:
-          // ???
+          // Increase dispense rate by 2x for 10 seconds, but only if there is no boost currently active
+          if (dispenser.getDispenseBoostSecondsRemaining() == 0) {
+            dispenser.dispenseBoost(2f, 10f);
+          } else {
+            // If there is already a boost, return the unused bread to the inventory
+            inventory.addItem(Items.BREAD, 1);
+          }
           break;
       }
     }
@@ -247,5 +253,9 @@ public class GameSession {
 
   public Inventory getInventory() {
     return inventory;
+  }
+
+  public BreadDispenser getDispenser() {
+    return dispenser;
   }
 }
