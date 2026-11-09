@@ -19,6 +19,8 @@ public class GameSession {
   private final CampusMap map;
   private final Player player;
 
+  private final Inventory inventory = new Inventory(3, 3);
+
   /** Null until enough geese have been fed (FR_BOSS). */
   private GooseMan gooseMan;
 
@@ -150,6 +152,25 @@ public class GameSession {
     moveY = y;
   }
 
+  public void useItem(Items item) {
+    if (inventory.useItem(item)) {
+      switch (item) {
+        case COFFEE:
+          // Give a 2x speed boost, but only if there is no boost currently active
+          if (player.getBoostSecondsLeft() == 0) {
+            player.boostSpeed(2f, 10f);
+          } else {
+            // If there is already a boost, return the unused coffee to the inventory
+            inventory.addItem(Items.COFFEE, 1);
+          }
+          break;
+        case BREAD:
+          // ???
+          break;
+      }
+    }
+  }
+
   /**
    * Returns the left-right part of the move input.
    *
@@ -222,5 +243,9 @@ public class GameSession {
 
   public int getGeeseFed() {
     return geeseFed;
+  }
+
+  public Inventory getInventory() {
+    return inventory;
   }
 }
