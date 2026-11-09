@@ -12,8 +12,6 @@ import com.goosepatrol.model.Player;
 
 /**
  * Renders the player from the current run on the screen
- * 
- * @param session the run to show
  */
 public class PlayerView {
   /** The size of one frame in the player sheets, in pixels. */
@@ -46,8 +44,6 @@ public class PlayerView {
 
   /**
    * Updates the position of the camera to center the player on screen
-   * 
-   * @param cam the camera to update
    */
   public void updateCameraPosition(OrthographicCamera cam) {
     Player player = session.getPlayer();
@@ -59,8 +55,6 @@ public class PlayerView {
 
   /**
    * Draws the player on screen. Called in render function of GameScreen.
-   * 
-   * @param cam the camera to use for rendering
    */
   public void draw(SpriteBatch batch, OrthographicCamera cam) {
     Player player = session.getPlayer();
@@ -89,27 +83,30 @@ public class PlayerView {
     } else {
       switch (player.getFacing()) {
         case UP:
-          frame = new TextureRegion(idleUp, (int)playerBounds.width, (int)playerBounds.height);
+          frame = new TextureRegion(idleUp, FRAME_WIDTH, FRAME_HEIGHT);
           break;
         case DOWN:
-          frame = new TextureRegion(idleDown, (int)playerBounds.width, (int)playerBounds.height);
+          frame = new TextureRegion(idleDown, FRAME_WIDTH, FRAME_HEIGHT);
           break;
         case LEFT:
-          frame = new TextureRegion(idleRight, (int)playerBounds.width, (int)playerBounds.height);
+          frame = new TextureRegion(idleRight, FRAME_WIDTH, FRAME_HEIGHT);
           frame.flip(true, false); 
           break;
         case RIGHT:
-          frame = new TextureRegion(idleRight, (int)playerBounds.width, (int)playerBounds.height);
+          frame = new TextureRegion(idleRight, FRAME_WIDTH, FRAME_HEIGHT);
           break;
         default:
-          frame = new TextureRegion(idleDown, (int)playerBounds.width, (int)playerBounds.height );
+          frame = new TextureRegion(idleDown, FRAME_WIDTH, FRAME_HEIGHT);
       }
     }
 
     batch.setProjectionMatrix(cam.combined);
     batch.begin();
-    batch.draw(frame, playerBounds.x * GameConfig.MAP_SCALE, playerBounds.y * GameConfig.MAP_SCALE, 
-      playerBounds.width * GameConfig.MAP_SCALE, playerBounds.height * GameConfig.MAP_SCALE);
+    float width = FRAME_WIDTH * GameConfig.DRAW_SCALE;
+    float height = FRAME_HEIGHT * GameConfig.DRAW_SCALE;
+    float frameX = playerBounds.x + playerBounds.width / 2 - width / 2; // the feet box sits at the frame's bottom middle
+    batch.draw(frame, frameX * GameConfig.MAP_SCALE, playerBounds.y * GameConfig.MAP_SCALE,
+      width * GameConfig.MAP_SCALE, height * GameConfig.MAP_SCALE);
     batch.end();
   }
 

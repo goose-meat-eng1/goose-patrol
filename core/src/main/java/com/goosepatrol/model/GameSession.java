@@ -7,11 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * One run of the game, from the start prompt to the end screen (D2, D3).
- *
- * <p>It holds the run's {@link RunState}, its {@link GameClock}, the student, the map, the geese, the bread and the
- * eggs. {@link #update(float)} changes them only while the run is PLAYING, so nothing moves while the run waits to
- * start, is paused or has ended. Later slices add the counters, the items and the events here.
+ * One run of the game, from the start prompt to the end screen.
  */
 public class GameSession {
 
@@ -24,7 +20,7 @@ public class GameSession {
   /** Null until enough geese have been fed (FR_BOSS). */
   private GooseMan gooseMan;
 
-  /** Brings the geese in waves (FR_SPAWN); null means no geese, as in most tests. */
+  /** Brings the geese in waves (FR_SPAWN) null means no geese, as in most tests. */
   private final GooseSpawner spawner;
 
   private final BreadDispenser dispenser = new BreadDispenser();
@@ -32,10 +28,10 @@ public class GameSession {
   private final List<Bread> bread = new ArrayList<>();
   private final List<Egg> eggs = new ArrayList<>();
 
-  // FR_PAUSE: every run opens waiting for the start key.
+  // Every run opens waiting for the start key (FR_PAUSE).
   private RunState state = RunState.READY;
 
-  // FR_MOVE: the held movement keys, each -1, 0 or 1, set every frame by the input handler.
+  // The held movement keys, each -1, 0 or 1, set every frame by the input handler (FR_MOVE).
   private int moveX;
   private int moveY;
 
@@ -47,7 +43,7 @@ public class GameSession {
     this(clock, map, player, null);
   }
 
-  /** Makes a run that waits for the start key. The game builds runs with {@link GameSetup#newSession(CampusMap)}. */
+  /** Makes a run that waits for the start key. The game builds runs with GameSetup#newSession(CampusMap). */
   public GameSession(GameClock clock, CampusMap map, Player player, GooseSpawner spawner) {
     this.clock = clock;
     this.map = map;
@@ -56,7 +52,7 @@ public class GameSession {
   }
 
   /**
-   * Starts the run: READY becomes PLAYING (FR_PAUSE, D3). In any other state it does nothing.
+   * Starts the run READY becomes PLAYING (FR_PAUSE). In any other state it does nothing.
    */
   public void start() {
     if (state == RunState.READY) {
@@ -65,9 +61,7 @@ public class GameSession {
   }
 
   /**
-   * Pauses or resumes the run: PLAYING becomes PAUSED, and PAUSED becomes PLAYING (FR_PAUSE, D3). The next call
-   * to {@link #update(float)} already sees the new state, so a pause takes effect in the same frame
-   * (FR_PAUSE). Before the start and after the end it does nothing.
+   * Pauses or resumes the run PLAYING becomes PAUSED, and PAUSED becomes PLAYING (FR_PAUSE). 
    */
   public void togglePause() {
     if (state == RunState.PLAYING) {
@@ -78,20 +72,17 @@ public class GameSession {
   }
 
   /**
-   * Moves the run on by one frame (D4). Only a PLAYING run changes: the clock counts down, the run ends when the
-   * time is up (FR_TIMER), and otherwise the student, the geese and the bread move (FR_MOVE, FR_SPAWN, FR_BREAD). A
-   * frame longer than {@link GameConfig#MAX_FRAME_SECONDS} counts as that much.
-   *
-   * @param delta the frame's length in seconds, as libGDX gives it
+   * Moves the run on by one frame. Only a PLAYING run changes the clock counts down, the run ends when the
+   * time is up (FR_TIMER), and otherwise the student, the geese and the bread move (FR_MOVE, FR_SPAWN, FR_BREAD).
    */
   public void update(float delta) {
     if (state != RunState.PLAYING) {
-      return; // FR_PAUSE: nothing changes while paused, before the start or after the end
+      return; 
     }
     float frame = Math.min(delta, GameConfig.MAX_FRAME_SECONDS);
     clock.tick(frame);
     if (clock.isUp()) {
-      state = RunState.ENDED; // D3: when(timeLeft = 0)
+      state = RunState.ENDED; 
       return;
     }
     player.update(moveX, moveY, frame, map);
@@ -125,15 +116,17 @@ public class GameSession {
 
   // Throws and moves the bread, and feeds the geese; a goose that gets full lays an egg (FR_BREAD, FR_FULLNESS).
   private void updateBread(float frame) {
-    Bread thrown = dispenser.update(frame, player.getBounds(), geese, bread);
+    Bread thrown = dispenser.update(frame, player.getBounds(), geese, gooseMan, bread);
     if (thrown != null) {
       bread.add(thrown);
     }
     for (Bread piece : bread) {
-      Goose goose = piece.getTarget();
-      if (piece.update(frame) && goose.feed()) {
+      Feedable target = piece.getTarget();
+      // A full Goose Man is defeated (FR_BOSS), but he isn't a goose fed and lays no egg.
+      if (piece.update(frame) && target.feed() && target != gooseMan) {
         geeseFed++;
-        Rectangle box = goose.getBounds();
+        Rectangle box = target.getBounds();
+
         eggs.add(new Egg(box.x + box.width / 2, box.y + box.height / 2));
       }
     }
@@ -142,15 +135,13 @@ public class GameSession {
 
   /**
    * Sets the direction the player is asking the student to move in (FR_MOVE). The input handler calls this every
-   * frame. Slice 2's student and map model (#4) moves the student by it in {@link #update(float)}.
-   *
-   * @param x -1 for left, 1 for right, 0 for neither
-   * @param y -1 for down, 1 for up, 0 for neither
+   * frame. 
    */
   public void setMoveInput(int x, int y) {
     moveX = x;
     moveY = y;
   }
+
 
   public void useItem(Items item) {
     if (inventory.useItem(item)) {
@@ -177,56 +168,32 @@ public class GameSession {
     }
   }
 
-  /**
-   * Returns the left-right part of the move input.
-   *
-   * @return -1 for left, 1 for right, 0 for neither
-   */
+
   public int getMoveX() {
     return moveX;
   }
 
-  /**
-   * Returns the up-down part of the move input.
-   *
-   * @return -1 for down, 1 for up, 0 for neither
-   */
+ 
   public int getMoveY() {
     return moveY;
   }
 
-  /**
-   * Returns the state the run is in.
-   *
-   * @return READY, PLAYING, PAUSED or ENDED
-   */
+
   public RunState getState() {
     return state;
   }
 
-  /**
-   * Returns the time left in the run, for the HUD (FR_TIMER).
-   *
-   * @return the time left in seconds, from 300 down to 0
-   */
+
   public double getTimeLeft() {
     return clock.getTimeLeft();
   }
 
-  /**
-   * Returns the student, for drawing and for tests.
-   *
-   * @return the student
-   */
+
   public Player getPlayer() {
     return player;
   }
 
-  /**
-   * Returns the campus this run is played on.
-   *
-   * @return the map
-   */
+
   public CampusMap getMap() {
     return map;
   }

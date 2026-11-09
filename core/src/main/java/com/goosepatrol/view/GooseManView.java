@@ -46,7 +46,7 @@ public class GooseManView {
       return;
     }
 
-    // Play time stops while paused, so the geese don't flap during a pause.
+    // Play time stops while paused, so the goose man don't flap during a pause.
     float playSeconds = (float) (GameConfig.RUN_SECONDS - session.getTimeLeft());
     batch.setProjectionMatrix(cam.combined);
     batch.begin();
@@ -68,9 +68,9 @@ public class GooseManView {
   // The goose man's frame with its feet on its box's bottom, mirrored when it faces left.
   private void drawGooseMan(SpriteBatch batch, GooseMan gooseMan, float playSeconds) {
     Rectangle box = gooseMan.getBounds();
-    boolean moving = gooseMan.getState() != GooseMan.State.RUNNING || !gooseMan.getVelocity().isZero();
+    boolean defeated = gooseMan.getState() == GooseMan.State.DEFEATED;
     float time = playSeconds + Math.floorMod(System.identityHashCode(gooseMan), 5) * SECONDS_PER_FRAME;
-    TextureRegion frame = (moving ? walk : idle).getKeyFrame(time, true);
+    TextureRegion frame = (defeated ? idle : walk).getKeyFrame(time, true);
     float scale = GameConfig.MAP_SCALE;
     float left = (box.x + box.width / 2 - FRAME_WIDTH / 2f) * scale;
     float bottom = box.y * scale;

@@ -14,10 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Turns the Tiled map into the model's {@link CampusMap} (FR_MAP), so the model never reads a file. The walls are the
+ * Turns the Tiled map into the model's CampusMap (FR_MAP), so the model never reads a file. The walls are the
  * rectangles drawn on the "Collisions" and "Deep water" object layers, so the student can't walk through a building
- * or into the lake. The point called "student" on the "Spawns" layer is where the student starts. The tiles are only
- * pictures. The map's "Shallow water" layer isn't read yet, as no requirement says what shallow water does.
+ * or into the lake. 
  */
 public final class CampusMapLoader {
 
@@ -43,10 +42,6 @@ public final class CampusMapLoader {
 
   /**
    * Reads the size, the walls and the student's start from a Tiled map.
-   *
-   * @param tiledMap the map, as libGDX's TmxMapLoader loaded it
-   * @return the campus for the model
-   * @throws IllegalArgumentException if the map has no "student" point in its "Spawns" layer
    */
   public static CampusMap fromTiledMap(TiledMap tiledMap) {
     MapProperties properties = tiledMap.getProperties();
@@ -74,17 +69,12 @@ public final class CampusMapLoader {
     if (group instanceof MapGroupLayer) {
       return ((MapGroupLayer) group).getLayers();
     }
-    return new MapLayers(); // no group: no walls and no water
+    return new MapLayers(); // no group, so no walls and no water
   }
 
   /**
    * Reads the rectangles drawn on one object layer. Other shapes, such as polygons, are left out, so these layers
-   * are drawn with Tiled's rectangle tool.
-   *
-   * @param layers the map layers
-   * @param layerName the object layer's name in Tiled
-   * @return copies of the rectangles, in map pixels with y counted upwards, or an empty list if there is no such layer
-   */
+   * are drawn with Tiled's rectangle tool.*/
   private static List<Rectangle> rectangles(MapLayers layers, String layerName) {
     List<Rectangle> rectangles = new ArrayList<>();
     MapLayer layer = layers.get(layerName);

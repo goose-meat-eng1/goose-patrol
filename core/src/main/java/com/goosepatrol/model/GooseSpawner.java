@@ -40,7 +40,8 @@ public class GooseSpawner {
     for (int i = 0; i < size; i++) {
       Vector2 place = arrivalPlace(student, map, geese, arrivals);
       if (place != null) {
-        arrivals.add(new Goose(place));
+        GooseKind kind = random.nextFloat() < GameConfig.WHITE_GOOSE_CHANCE ? GooseKind.WHITE : GooseKind.CANADIAN;
+        arrivals.add(new Goose(place, kind));
       }
     }
     return arrivals;
@@ -82,8 +83,6 @@ public class GooseSpawner {
 
   /**
  * Brings the Goose Man in off screen, the way a goose arrives (FR_BOSS).
- *
- * @return the Goose Man, or null if no clear place was found this frame
  */
   public GooseMan bringGooseMan(Rectangle student, CampusMap map, List<Goose> geese) {
     Vector2 place = arrivalPlace(student, map, geese, List.of());

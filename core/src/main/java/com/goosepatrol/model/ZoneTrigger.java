@@ -3,7 +3,7 @@ package com.goosepatrol.model;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
- * ZoneTrigger is the list of areas that will trigger an event and where the event will spawn
+ * ZoneTrigger is the One area  that will trigger an event and where the event will spawn
  */
 public class ZoneTrigger {
   private final Rectangle area;

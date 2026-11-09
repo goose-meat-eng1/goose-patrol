@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 final class MovingBox {
-  /** The box, in map pixels: its bottom-left corner is (x, y). */
+  /** The box in map pixels, with its bottom-left corner at (x, y). */
   private final Rectangle bounds;
 
   MovingBox(float x, float y, float width, float height) {
@@ -30,7 +30,7 @@ final class MovingBox {
     if (wall != null) {
       bounds.x = dx > 0 ? wall.x - bounds.width : wall.x + wall.width; // right against the wall's near side
       if (wallAt.apply(bounds) != null) {
-        bounds.x = oldX; // squeezed between two walls: stay where it was
+        bounds.x = oldX; 
       }
     }
     return bounds.x != wantedX;

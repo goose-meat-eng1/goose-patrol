@@ -14,6 +14,7 @@ import com.goosepatrol.model.Facing;
 import com.goosepatrol.model.GameConfig;
 import com.goosepatrol.model.GameSession;
 import com.goosepatrol.model.Goose;
+import com.goosepatrol.model.GooseKind;
 
 /** Draws the geese, the bread and the eggs (FR_GOOSE_MOVE, FR_BREAD, FR_FULLNESS). */
 public class GooseView {
@@ -33,10 +34,15 @@ public class GooseView {
   private final GameSession session;
   private final Texture walkSheet = new Texture("geese/Canadian Goose Chase.png");
   private final Texture idleSheet = new Texture("geese/Canadian Goose Idle.png");
+  private final Texture whiteWalkSheet = new Texture("geese/White Goose Chase.png");
+  private final Texture whiteIdleSheet = new Texture("geese/White Goose Idle.png");
   private final Texture breadPicture = new Texture("items/Bread.png");
   private final Texture eggPicture = new Texture("items/Egg.png");
+
   private final Animation<TextureRegion> walk = loop(walkSheet);
   private final Animation<TextureRegion> idle = loop(idleSheet);
+  private final Animation<TextureRegion> whiteWalk = loop(whiteWalkSheet);
+  private final Animation<TextureRegion> whiteIdle = loop(whiteIdleSheet);
   private final ShapeRenderer shapeRenderer = new ShapeRenderer();
 
   /** Makes the view for one run. */
@@ -91,7 +97,12 @@ public class GooseView {
     boolean moving = goose.getState() != Goose.State.CHASING || !goose.getVelocity().isZero();
     // A different start frame for each goose, so the flock doesn't step in time.
     float time = playSeconds + Math.floorMod(System.identityHashCode(goose), 5) * SECONDS_PER_FRAME;
-    TextureRegion frame = (moving ? walk : idle).getKeyFrame(time, true);
+
+    boolean white = goose.getKind() == GooseKind.WHITE;
+    Animation<TextureRegion> walking = white ? whiteWalk : walk;
+    Animation<TextureRegion> standing = white ? whiteIdle : idle;
+    TextureRegion frame = (moving ? walking : standing).getKeyFrame(time, true);
+
     float scale = GameConfig.MAP_SCALE;
     float left = (box.x + box.width / 2 - FRAME_SIZE / 2f) * scale;
     float bottom = (box.y + goose.getFlyingSeconds() * LIFT_SPEED) * scale;
@@ -128,6 +139,8 @@ public class GooseView {
   public void dispose() {
     walkSheet.dispose();
     idleSheet.dispose();
+    whiteWalkSheet.dispose();
+    whiteIdleSheet.dispose();
     breadPicture.dispose();
     eggPicture.dispose();
     shapeRenderer.dispose();

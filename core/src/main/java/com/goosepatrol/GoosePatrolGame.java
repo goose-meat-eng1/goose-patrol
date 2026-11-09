@@ -16,8 +16,9 @@ import com.goosepatrol.view.EndScreen;
 import com.goosepatrol.view.GameScreen;
 
 /**
- * The libGDX {@link Game}, shared by all platforms (D1). It loads the campus map, builds each run with
- * {@link GameSetup}, makes the screens and the key handler, and switches screens.
+ * The libGDX Game, shared by all platforms. 
+ * It loads the campus map, builds each run with GameSetup, 
+ * makes the screens and the key handler, and switches screens.
  */
 public class GoosePatrolGame extends Game {
 
@@ -32,15 +33,13 @@ public class GoosePatrolGame extends Game {
   private TiledMap tiledMap;
   private CampusMap campusMap;
 
-  /** Makes the game. The set-up happens in {@link #create()}, which libGDX calls once the window is ready. */
+  /** Makes the game. The set-up happens in create(), which libGDX calls once the window is ready. */
   public GoosePatrolGame() {
   }
 
   @Override
   public void create() {
     batch = new SpriteBatch();
-    // font: Liberation Sans at 15 px
-    // font made at a readable size (UR_ACCESS).
     font = new BitmapFont();
     tiledMap = new TmxMapLoader().load(MAP_FILE);
     campusMap = CampusMapLoader.fromTiledMap(tiledMap);
