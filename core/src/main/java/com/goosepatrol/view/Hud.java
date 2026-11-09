@@ -75,6 +75,12 @@ public class Hud {
     }
   }
 
+  public void dispose() {
+    inventoryTexture.dispose();
+    coffeeItemTexture.dispose();
+    breadItemTexture.dispose();
+  }
+
   /**
    * Formats seconds as m:ss.
    * @param seconds the time left in seconds
