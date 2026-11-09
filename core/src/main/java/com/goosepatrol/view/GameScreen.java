@@ -111,5 +111,6 @@ public class GameScreen extends ScreenAdapter {
     playerView.dispose();
     gooseView.dispose();
     gooseManView.dispose();
+    hud.dispose();
   }
 }

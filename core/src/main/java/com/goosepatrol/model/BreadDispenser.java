@@ -9,9 +9,12 @@ public class BreadDispenser {
 
   /** Seconds until the next throw; 0 means ready. */
   private float secondsToReady;
+  private float dispenseBoostSeconds;
+  private float dispenseBoostFactor;
 
   /** Throws a piece if it is ready and a goose is in range, and returns it, or null (FR_BREAD). */
   public Bread update(float delta, Rectangle student, List<Goose> geese, List<Bread> bread) {
+    dispenseBoostSeconds = Math.max(0, dispenseBoostSeconds - delta);
     secondsToReady = Math.max(0, secondsToReady - delta);
     if (secondsToReady > 0) {
       return null;
@@ -22,6 +25,9 @@ public class BreadDispenser {
       return null;
     }
     secondsToReady = GameConfig.BREAD_GAP_SECONDS;
+    if (dispenseBoostSeconds > 0) {
+      secondsToReady /= dispenseBoostFactor;
+    }
     return new Bread(from, target);
   }
 
@@ -50,5 +56,15 @@ public class BreadDispenser {
       }
     }
     return count;
+  }
+
+  public void dispenseBoost(float factor, float seconds) {
+    dispenseBoostSeconds = seconds;
+    dispenseBoostFactor = factor;
+    secondsToReady /= factor;
+  }
+
+  public float getDispenseBoostSecondsRemaining() {
+    return dispenseBoostSeconds;
   }
 }

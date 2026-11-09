@@ -3,6 +3,9 @@ package com.goosepatrol.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.goosepatrol.model.GameSession;
+import com.goosepatrol.model.Items;
+import com.goosepatrol.model.RunState;
+
 import java.util.function.IntPredicate;
 
 /**
@@ -46,6 +49,9 @@ public class InputHandler extends InputAdapter {
   /** Moves the student right, as {@link #RIGHT_KEY} does (FR_MOVE). */
   public static final int RIGHT_ARROW = Input.Keys.RIGHT;
 
+  public static final int COFFEE_KEY = Input.Keys.NUM_1;
+  public static final int BREAD_KEY = Input.Keys.NUM_2;
+
   private final GameSession session;
   private final IntPredicate isHeld;
 
@@ -77,6 +83,18 @@ public class InputHandler extends InputAdapter {
       session.togglePause();
       return true;
     }
+
+    if (session.getState() == RunState.PLAYING) {
+      if (keycode == COFFEE_KEY) {
+        session.useItem(Items.COFFEE);
+        return true;
+      }
+      if (keycode == BREAD_KEY) {
+        session.useItem(Items.BREAD);
+        return true;
+      }
+    }
+    
     return false;
   }
 
