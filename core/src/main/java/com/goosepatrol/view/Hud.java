@@ -42,34 +42,46 @@ public class Hud {
    * Draws the HUD. Call draw between batch.begin() and  batch.end().
    */
   public void draw(SpriteBatch batch, float width, float height) {
-    // Draw remaining time and the start/pause message
-    font.draw(batch, "Time left " + formatTime(session.getTimeLeft()), MARGIN, height - MARGIN);
-    font.draw(batch, messageFor(session.getState()), 0, height / 2, width, Align.center, false);
+    // Display generic message based on current state
+    font.draw(batch, messageFor(session.getState()), 0, height / 2 + MARGIN, width, Align.center, false);
 
-    // Draw the inventory
-    float inventoryX = width/2 - inventoryWidth/2;
-    float inventoryY = height - inventoryHeight/2 - MARGIN*1.5f;
+    // Only draw the rest of the HUD after the run has started
+    if (session.getState() != RunState.READY) {
+      font.draw(batch, "Time left " + formatTime(session.getTimeLeft()), MARGIN, height - MARGIN);
 
-    batch.draw(inventoryTexture, inventoryX, inventoryY, inventoryWidth, inventoryHeight);
+      if (session.getHudMessageTime() > 0) {
+        font.draw(batch, session.getHudMessage(), 0, height / 2 + MARGIN*10, width, Align.center, false);
+      }
 
-    if (session.getInventory().getItemCount(Items.COFFEE) > 0) {
-      batch.draw(coffeeItemTexture, inventoryX + INVENTORY_SCALE, inventoryY + INVENTORY_SCALE, itemSize, itemSize);
+      font.draw(batch, "Geese fed: " + session.getGeeseFed(), MARGIN, height - MARGIN * 3);
+      font.draw(batch, "Items used: " + session.getItemsUsed(), MARGIN, height - MARGIN * 4);
+      font.draw(batch, "Events triggered: " + session.getEventsTriggered(), MARGIN, height - MARGIN * 5);
 
-      float boostTime = session.getPlayer().getBoostSecondsLeft();
-      if (boostTime == 0)
-        font.draw(batch, "1 (x" + session.getInventory().getItemCount(Items.COFFEE) + ")", inventoryX + INVENTORY_SCALE, inventoryY - INVENTORY_SCALE);
-      else
-        font.draw(batch, formatTime(boostTime), inventoryX + INVENTORY_SCALE, inventoryY - INVENTORY_SCALE);
-    }
+      // Draw the inventory
+      float inventoryX = width/2 - inventoryWidth/2;
+      float inventoryY = height - inventoryHeight/2 - MARGIN*1.5f;
 
-    if (session.getInventory().getItemCount(Items.BREAD) > 0) {
-      batch.draw(breadItemTexture, inventoryX + INVENTORY_SCALE + itemGap, inventoryY + INVENTORY_SCALE, itemSize, itemSize);
+      batch.draw(inventoryTexture, inventoryX, inventoryY, inventoryWidth, inventoryHeight);
 
-      float boostTime = session.getDispenser().getDispenseBoostSecondsRemaining();
-      if (boostTime == 0)
-        font.draw(batch, "2 (x" + session.getInventory().getItemCount(Items.BREAD) + ")", inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
-      else
-        font.draw(batch, formatTime(boostTime), inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
+      if (session.getInventory().getItemCount(Items.COFFEE) > 0) {
+        batch.draw(coffeeItemTexture, inventoryX + INVENTORY_SCALE, inventoryY + INVENTORY_SCALE, itemSize, itemSize);
+
+        float boostTime = session.getPlayer().getBoostSecondsLeft();
+        if (boostTime == 0)
+          font.draw(batch, "1 (x" + session.getInventory().getItemCount(Items.COFFEE) + ")", inventoryX + INVENTORY_SCALE, inventoryY - INVENTORY_SCALE);
+        else
+          font.draw(batch, formatTime(boostTime), inventoryX + INVENTORY_SCALE, inventoryY - INVENTORY_SCALE);
+      }
+
+      if (session.getInventory().getItemCount(Items.BREAD) > 0) {
+        batch.draw(breadItemTexture, inventoryX + INVENTORY_SCALE + itemGap, inventoryY + INVENTORY_SCALE, itemSize, itemSize);
+
+        float boostTime = session.getDispenser().getDispenseBoostSecondsRemaining();
+        if (boostTime == 0)
+          font.draw(batch, "2 (x" + session.getInventory().getItemCount(Items.BREAD) + ")", inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
+        else
+          font.draw(batch, formatTime(boostTime), inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
+      }
     }
   }
 
@@ -93,7 +105,7 @@ public class Hud {
    */
   static String messageFor(RunState state) {
     return switch (state) {
-      case READY -> "Press SPACE to start. Move with WASD or the arrow keys. P pauses the game.";
+      case READY -> "Move with WASD or the arrow keys.\nUse items by pressing the number keys (e.g. 1, 2)\nP pauses the game.\nPress SPACE to start.";
       case PAUSED -> "Paused. Press P to carry on.";
       default -> "";
     };
