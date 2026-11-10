@@ -140,6 +140,11 @@ public class Goose implements Feedable {
     return true;
   }
 
+  public void feedMax() {
+    fullness = GameConfig.GOOSE_FULLNESS;
+    state = State.FLYING_AWAY;
+  }
+
   /** Whether the goose has eaten all the bread it can (FR_FULLNESS). */
   public boolean isFull() {
     return fullness >= GameConfig.GOOSE_FULLNESS;

@@ -90,7 +90,7 @@ public final class GameConfig {
   public static final float BREAD_RANGE = 200f;
 
   /** How many pieces of bread fill the Goose Man (FR_BOSS). */
-  public static final int GOOSE_MAN_FULLNESS = 3;
+  public static final int GOOSE_MAN_FULLNESS = 15;
 
   /** How many geese must be filled before the Goose Man arrives (FR_BOSS). */
   public static final int GOOSE_MAN_AFTER_GEESE = 15;

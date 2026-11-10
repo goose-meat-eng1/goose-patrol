@@ -19,6 +19,7 @@ public class GameSession {
 
   /** Null until enough geese have been fed (FR_BOSS). */
   private GooseMan gooseMan;
+  private Boolean gooseManDefeated = false;
 
   /** Brings the geese in waves (FR_SPAWN) null means no geese, as in most tests. */
   private final GooseSpawner spawner;
@@ -94,11 +95,14 @@ public class GameSession {
   // Brings in a wave when one is due, moves the geese, and drops the ones that have flown off (FR_SPAWN).
   private void updateGeese(float frame) {
     Rectangle student = player.getBounds();
-    if (spawner != null) {
+    if (spawner != null && !gooseManDefeated) {
       geese.addAll(spawner.update(frame, student, map, geese));
     }
     Vector2 target = student.getCenter(new Vector2());
     for (Goose goose : geese) {
+      if (gooseManDefeated)
+        goose.feedMax();
+
       goose.update(target, geese, frame, map);
     }
     geese.removeIf(goose -> goose.getState() == Goose.State.GONE);
@@ -111,7 +115,12 @@ public class GameSession {
       }
       return;
     }
+    
     gooseMan.update(frame,map);
+
+    if (gooseMan.getState() == GooseMan.State.DEFEATED) {
+      gooseManDefeated = true;
+    }
   }
 
   // Throws and moves the bread, and feeds the geese; a goose that gets full lays an egg (FR_BREAD, FR_FULLNESS).
