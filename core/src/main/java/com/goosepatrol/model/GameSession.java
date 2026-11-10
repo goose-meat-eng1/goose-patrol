@@ -38,6 +38,11 @@ public class GameSession {
 
   /** How many geese have been filled this run. */
   private int geeseFed;
+  private int itemsUsed;
+  private int eventsTriggered;
+
+  private String announcementMessage;
+  private double announcementTime;
 
   /** Makes a run with no geese that waits for the start key, for tests. */
   public GameSession(GameClock clock, CampusMap map, Player player) {
@@ -82,6 +87,11 @@ public class GameSession {
     }
     float frame = Math.min(delta, GameConfig.MAX_FRAME_SECONDS);
     clock.tick(frame);
+
+    if (announcementTime > 0) {
+      announcementTime -= frame;
+    }
+    
     if (clock.isUp()) {
       state = RunState.ENDED; 
       return;
@@ -112,6 +122,7 @@ public class GameSession {
     if (gooseMan == null) {
       if (spawner != null && geeseFed >= GameConfig.GOOSE_MAN_AFTER_GEESE) {
         gooseMan = spawner.bringGooseMan(player.getBounds(), map, geese);
+        eventsTriggered++;
       }
       return;
     }
@@ -151,7 +162,6 @@ public class GameSession {
     moveY = y;
   }
 
-
   public void useItem(Items item) {
     if (inventory.useItem(item)) {
       switch (item) {
@@ -159,6 +169,8 @@ public class GameSession {
           // Give a 2x speed boost, but only if there is no boost currently active
           if (player.getBoostSecondsLeft() == 0) {
             player.boostSpeed(2f, 10f);
+            setHudMessage("Drank coffee!\n2x movement speed for 10 seconds!", 5);
+            itemsUsed++;
           } else {
             // If there is already a boost, return the unused coffee to the inventory
             inventory.addItem(Items.COFFEE, 1);
@@ -168,6 +180,8 @@ public class GameSession {
           // Increase dispense rate by 2x for 10 seconds, but only if there is no boost currently active
           if (dispenser.getDispenseBoostSecondsRemaining() == 0) {
             dispenser.dispenseBoost(2f, 10f);
+            setHudMessage("Bread dispenser boost!\n2x dispense rate for 10 seconds!", 5);
+            itemsUsed++;
           } else {
             // If there is already a boost, return the unused bread to the inventory
             inventory.addItem(Items.BREAD, 1);
@@ -176,7 +190,19 @@ public class GameSession {
       }
     }
   }
+  
+  public void setHudMessage(String message, double displayTime) {
+    announcementMessage = message;
+    announcementTime = displayTime;
+  }
 
+  public String getHudMessage() {
+    return announcementMessage;
+  }
+  
+  public double getHudMessageTime() {
+    return announcementTime;
+  }
 
   public int getMoveX() {
     return moveX;
@@ -225,6 +251,14 @@ public class GameSession {
 
   public int getGeeseFed() {
     return geeseFed;
+  }
+
+  public int getItemsUsed() {
+    return itemsUsed;
+  }
+
+  public int getEventsTriggered() {
+    return eventsTriggered;
   }
 
   public Inventory getInventory() {
