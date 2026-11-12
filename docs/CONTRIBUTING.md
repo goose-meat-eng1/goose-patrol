@@ -90,4 +90,3 @@ Every branch starts from the newest `main`, and every pull request goes back int
   git push origin v0.2.0
   ```
 - Don't change the repo's visibility. It stays private until 12:00 GMT on Mon 16 Nov 2026.
-- Diagrams: see `docs/architecture/README.md`.

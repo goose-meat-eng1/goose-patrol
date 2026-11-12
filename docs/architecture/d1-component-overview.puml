@@ -1,0 +1,24 @@
+@startuml d1-component-overview
+
+!include style.iuml
+title Goose Patrol: D1 component overview
+caption v0.4.0, 9 Nov 2026.
+
+component "lwjgl3" as lwjgl3
+component "GoosePatrolGame" as game
+component "input" as input
+component "view" as view
+component "model" as model
+component "libGDX 1.14.2" <<library>> as gdx
+
+lwjgl3 .down.> game : <<create>>
+game .down.> view
+game .down.> input
+game .down.> model
+input .down.> model
+view .down.> model
+view .right.> gdx
+model .right.> gdx
+
+
+@enduml

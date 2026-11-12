@@ -1,26 +1,31 @@
 @startuml d5-use-item-sequence
 
 !include style.iuml
-
 title Goose Patrol: D5 using an item
-caption v0.2.0 draft, 17 Oct 2026
+caption v0.4.0, 12 Nov 2026. Key 1 is coffee, key 2 is bread.\nThe HUD shows the message for 5 s.
 hide footbox
 
-participant ":InputHandler" as input
-participant ":GameSession" as session
-participant ":Inventory" as inventory
-participant "item:Item" as item
-participant ":Counters" as counters
+participant "InputHandler" as input
+participant "GameSession" as session
+participant "Inventory" as inventory
+participant "Player" as player
+participant "BreadDispenser" as dispenser
 
-[-> input : keyDown(NUM_1)
-input -> session : useItem(1)
+[-> input : keyDown(key)
 opt state = PLAYING
-  session -> inventory : use(1)
-  inventory --> session : item, or none
-  opt an item came back
-    session -> item : apply(this)
-    session -> counters : itemUsed()
+  input -> session : useItem(item)
+  session -> inventory : useItem(item)
+  inventory --> session : one was left
+  opt one was left
+    alt COFFEE, no boost
+      session -> player : boostSpeed(2, 10)
+      session -> session : setHudMessage(...),\nitemsUsed + 1
+    else BREAD, no boost
+      session -> dispenser : dispenseBoost(2, 10)
+      session -> session : setHudMessage(...),\nitemsUsed + 1
+    else a boost is running
+      session -> inventory : addItem(item, 1)
+    end
   end
 end
-
 @enduml
