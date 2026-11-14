@@ -26,9 +26,11 @@ public class Player {
   private final Vector2 direction = new Vector2();
   private Facing facing = Facing.DOWN;
 
-// A boost such as the coffee multiplies the top speed by speedBoost for boostSecondsLeft seconds (FR_PICKUP).  
+  // A boost such as the coffee multiplies the top speed by speedBoost for boostSecondsLeft seconds (FR_PICKUP).  
   private float speedBoost = 1;
   private float boostSecondsLeft = 0;
+
+  private float stamina = GameConfig.PLAYER_STAMINA;
 
   /**
    * Makes the student, standing still and facing down.
@@ -119,5 +121,10 @@ public class Player {
   
   public Facing getFacing() {
     return facing;
+  }
+
+
+  public float getStamina() {
+    return stamina;
   }
 }
