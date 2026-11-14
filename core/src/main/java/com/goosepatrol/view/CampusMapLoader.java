@@ -11,7 +11,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.goosepatrol.model.CampusMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Turns the Tiled map into the model's CampusMap (FR_MAP), so the model never reads a file. The walls are the
@@ -37,6 +39,9 @@ public final class CampusMapLoader {
   /** The name of the student's starting point in the spawns layer. */
   public static final String STUDENT_SPAWN = "student";
 
+  /** The Tiled object layer whose named rectangles are the hidden event zones. */
+  public static final String EVENTS_LAYER = "Events";
+
   private CampusMapLoader() {
   }
 
@@ -60,8 +65,22 @@ public final class CampusMapLoader {
           + "\" layer");
     }
     
-    return new CampusMap(width, height, solids, deepWater, shallowWater, ((PointMapObject) student).getPoint());
+    return new CampusMap(width, height, solids, deepWater, shallowWater, eventZones(tiledMap),
+        ((PointMapObject) student).getPoint());
+  }
 
+  // The named rectangles on the events layer. Unnamed ones are left out, as nothing could ask for them.
+  private static Map<String, Rectangle> eventZones(TiledMap tiledMap) {
+    Map<String, Rectangle> zones = new HashMap<>();
+    MapLayer events = tiledMap.getLayers().get(EVENTS_LAYER);
+    if (events != null) {
+      for (RectangleMapObject shape : events.getObjects().getByType(RectangleMapObject.class)) {
+        if (shape.getName() != null) {
+          zones.put(shape.getName(), new Rectangle(shape.getRectangle()));
+        }
+      }
+    }
+    return zones;
   }
 
   private static MapLayers collisionLayers(TiledMap tiledMap) {

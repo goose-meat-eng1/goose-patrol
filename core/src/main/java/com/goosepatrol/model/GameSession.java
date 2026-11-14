@@ -28,6 +28,7 @@ public class GameSession {
   private final List<Goose> geese = new ArrayList<>();
   private final List<Bread> bread = new ArrayList<>();
   private final List<Egg> eggs = new ArrayList<>();
+  private final List<HiddenEvent> hiddenEvents;
 
   // Every run opens waiting for the start key (FR_PAUSE).
   private RunState state = RunState.READY;
@@ -55,6 +56,7 @@ public class GameSession {
     this.map = map;
     this.player = player;
     this.spawner = spawner;
+    this.hiddenEvents = HiddenEvent.fromMap(map);
   }
 
   /**
@@ -97,9 +99,23 @@ public class GameSession {
       return;
     }
     player.update(moveX, moveY, frame, map);
+    updateHiddenEvents();
     updateGeese(frame);
     updateGooseMan(frame);
     updateBread(frame);
+  }
+
+  // Gives the item and story of a hidden event the student has just walked into and counts it (FR_EVENT_HIDDEN,
+  // FR_EVENT_EFFECT, FR_EVENT_COUNT).
+  private void updateHiddenEvents() {
+    Rectangle student = player.getBounds();
+    for (HiddenEvent event : hiddenEvents) {
+      if (event.check(student)) {
+        inventory.addItem(event.getReward(), 1);
+        setHudMessage(event.getStory(), 5);
+        eventsTriggered++;
+      }
+    }
   }
 
   // Brings in a wave when one is due, moves the geese, and drops the ones that have flown off (FR_SPAWN).
