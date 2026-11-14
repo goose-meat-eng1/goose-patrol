@@ -32,6 +32,7 @@ public class GameSession {
 
   // Every run opens waiting for the start key (FR_PAUSE).
   private RunState state = RunState.READY;
+  private EndCondition endCondition;
 
   // The held movement keys, each -1, 0 or 1, set every frame by the input handler (FR_MOVE).
   private int moveX;
@@ -95,7 +96,7 @@ public class GameSession {
     }
     
     if (clock.isUp()) {
-      state = RunState.ENDED; 
+      endGame(EndCondition.TIMER);
       return;
     }
     player.update(moveX, moveY, frame, map);
@@ -137,7 +138,12 @@ public class GameSession {
         Vector2 gooseCenter = gooseBox.getCenter(new Vector2());
 
         if (gooseCenter.dst(target) < GameConfig.GOOSE_ATTACK_RANGE) {
-          player.reduceStamina(GameConfig.GOOSE_ATTACK_POWER);
+          float remainingStamina = player.reduceStamina(GameConfig.GOOSE_ATTACK_POWER);
+          if (remainingStamina == 0) {
+            endGame(EndCondition.STAMINA);
+            return;
+          }
+
           goose.startCooldown();
         }
       }
@@ -158,6 +164,7 @@ public class GameSession {
 
     if (gooseMan.getState() == GooseMan.State.DEFEATED) {
       gooseManDefeated = true;
+      endGame(EndCondition.VICTORY); // TODO: don't end immediately, add a delay or an escape sequence (collect golden egg?)
     }
   }
 
@@ -216,6 +223,11 @@ public class GameSession {
           break;
       }
     }
+  }
+
+  private void endGame(EndCondition endCondition) {
+    this.endCondition = endCondition;
+    state = RunState.ENDED;
   }
   
   public void setHudMessage(String message, double displayTime) {
@@ -294,5 +306,9 @@ public class GameSession {
 
   public BreadDispenser getDispenser() {
     return dispenser;
+  }
+
+  public EndCondition getEndCondition() {
+    return endCondition;
   }
 }

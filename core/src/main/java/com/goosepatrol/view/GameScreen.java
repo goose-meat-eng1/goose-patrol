@@ -75,6 +75,7 @@ public class GameScreen extends ScreenAdapter {
     gooseView.draw(batch, camera);
 
     hudViewport.apply();
+    hud.drawBackground(hudViewport.getCamera().combined, hudViewport.getWorldWidth(), hudViewport.getWorldHeight());
     batch.setProjectionMatrix(hudViewport.getCamera().combined);
     batch.begin();    
     hud.draw(batch, hudViewport.getWorldWidth(), hudViewport.getWorldHeight());

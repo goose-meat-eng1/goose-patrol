@@ -1,8 +1,12 @@
 package com.goosepatrol.view;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Align;
 import com.goosepatrol.model.GameSession;
 import com.goosepatrol.model.Items;
@@ -20,6 +24,7 @@ public class Hud {
 
   private final GameSession session;
   private final BitmapFont font;
+  private final ShapeRenderer shapeRenderer = new ShapeRenderer();
 
   private final Texture inventoryTexture = new Texture("items/Inventory.png");
   private final int inventoryWidth = inventoryTexture.getWidth() * INVENTORY_SCALE;
@@ -43,7 +48,7 @@ public class Hud {
    */
   public void draw(SpriteBatch batch, float width, float height) {
     // Display generic message based on current state
-    font.draw(batch, messageFor(session.getState()), 0, height / 2 + MARGIN, width, Align.center, false);
+    font.draw(batch, messageFor(session.getState()), 0, height / 2 - MARGIN/2, width, Align.center, false);
 
     // Only draw the rest of the HUD after the run has started
     if (session.getState() != RunState.READY) {
@@ -81,6 +86,25 @@ public class Hud {
           font.draw(batch, "2 (x" + session.getInventory().getItemCount(Items.BREAD) + ")", inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
         else
           font.draw(batch, formatTime(boostTime), inventoryX + INVENTORY_SCALE + itemGap, inventoryY - INVENTORY_SCALE);
+      }
+    }
+  }
+
+  /**
+   * Draw a translucent rectangle behind the HUD during certain states to dim the background
+   */
+  public void drawBackground(Matrix4 projectionMatrix, float width, float height) {
+    switch (session.getState()) {
+      case READY, PAUSED -> {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        shapeRenderer.setProjectionMatrix(projectionMatrix);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0f, 0f, 0f, 0.3f);
+        shapeRenderer.rect(0, 0, width, height);
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+      }
+      default -> {
       }
     }
   }
