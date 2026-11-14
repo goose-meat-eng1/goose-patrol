@@ -33,6 +33,10 @@ public class GoosePatrolGame extends Game {
   private TiledMap tiledMap;
   private CampusMap campusMap;
 
+  // Stores the current game session, or the last session that was played.
+  // Used for passing information about the session between screens.
+  private GameSession session;
+
   /** Makes the game. The set-up happens in create(), which libGDX calls once the window is ready. */
   public GoosePatrolGame() {
   }
@@ -48,7 +52,7 @@ public class GoosePatrolGame extends Game {
 
   /** Builds a new run and shows it, waiting for the start key (FR_PAUSE). */
   private void startRun() {
-    GameSession session = GameSetup.newSession(campusMap);
+    session = GameSetup.newSession(campusMap);
     InputHandler keys = new InputHandler(session, Gdx.input::isKeyPressed);
     Gdx.input.setInputProcessor(keys);
     setScreen(new GameScreen(session, keys::readMovement, tiledMap, batch, font, this::showEndScreen));
@@ -57,7 +61,7 @@ public class GoosePatrolGame extends Game {
   /** Swaps the play screen for the end screen once the run has ended (FR_SCREENS). */
   private void showEndScreen() {
     Screen playScreen = getScreen();
-    setScreen(new EndScreen(batch, font));
+    setScreen(new EndScreen(session, batch, font));
     playScreen.dispose(); // setScreen() only hides the old screen, so free it here
   }
 

@@ -34,6 +34,9 @@ public final class GameConfig {
    */
   public static final float STUDENT_STOP_SECONDS = 0.5f;
 
+  /** The amount of stamina the player starts with. */
+  public static final float PLAYER_STAMINA = 15f;
+
   /** The constant velocity the geese will approach the player. (FR_GOOSE_MOVE)*/
   public static final float GOOSE_VELOCITY = 100f;
 
@@ -48,6 +51,15 @@ public final class GameConfig {
 
   /** How long a full goose flies before it is gone, in seconds (FR_FULLNESS). */
   public static final float GOOSE_FLY_SECONDS = 2f;
+
+  /** The amount of stamina the player loses when attacked by a goose. */
+  public static final float GOOSE_ATTACK_POWER = 1f;
+
+  /** The distance from which a goose can attack the player. */
+  public static final float GOOSE_ATTACK_RANGE = 20f;
+
+  /** Length of goose attack cooldown period in seconds */
+  public static final float GOOSE_ATTACK_COOLDOWN = 1.5f;
 
   /** Seconds with no geese at the start of a run (FR_SPAWN). */
   public static final float CALM_START_SECONDS = 10f;
@@ -83,7 +95,7 @@ public final class GameConfig {
   /** Seconds between two pieces of bread (FR_BREAD). */
   public static final float BREAD_GAP_SECONDS = 0.5f;
 
-  /** How fast bread flies,  per second (FR_BREAD). */
+  /** How fast bread flies, per second (FR_BREAD). */
   public static final float BREAD_SPEED = 240f;
 
   /** How close a goose must be for the dispenser to throw at it, (FR_BREAD). */

@@ -11,6 +11,7 @@ public class Goose implements Feedable {
   public enum State {
     CHASING,
     FLYING_AWAY,
+    COOLDOWN,
     GONE
   }
 
@@ -27,6 +28,8 @@ public class Goose implements Feedable {
 
   /** Seconds spent flying away. */
   private float flyingSeconds;
+
+  private float cooldownSeconds;
 
   /** The goose's collision box, in map pixels, which moves and stops at walls. */
   private final MovingBox body;
@@ -50,6 +53,15 @@ public class Goose implements Feedable {
     }
     if (state == State.GONE) {
       return;
+    }
+    if (state == State.COOLDOWN) {
+      cooldownSeconds += delta;
+      if (cooldownSeconds >= GameConfig.GOOSE_ATTACK_COOLDOWN) {
+        state = State.CHASING;
+        cooldownSeconds = 0;
+      } else {
+        return;
+      }
     }
     Rectangle box = body.getBounds();
     direction.set(target).sub(box.x + WIDTH / 2, box.y + HEIGHT / 2);
@@ -127,9 +139,14 @@ public class Goose implements Feedable {
     return state == State.CHASING && body.getBounds().overlaps(box);
   }
 
+  public void startCooldown() {
+    state = State.COOLDOWN;
+    cooldownSeconds = 0;
+  }
+
   /** Feeds the goose one piece, and returns true if that filled it, so it flies away (FR_FULLNESS). */
   public boolean feed() {
-    if (state != State.CHASING) {
+    if (!canEat()) {
       return false;
     }
     fullness++;
@@ -153,7 +170,7 @@ public class Goose implements Feedable {
   /** If the goose is still on the ground, so it can eat (FR_FULLNESS). */
   @Override
   public boolean canEat() {
-    return state == State.CHASING;
+    return state == State.CHASING || state == State.COOLDOWN;
   }
 
   @Override

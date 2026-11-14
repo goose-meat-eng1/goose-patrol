@@ -84,7 +84,7 @@ public class GooseView {
     shapeRenderer.setProjectionMatrix(cam.combined);
     shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
     for (Goose goose : session.getGeese()) {
-      if (goose.getState() == Goose.State.CHASING) {
+      if (goose.canEat()){
         drawFullnessBar(goose);
       }
     }
