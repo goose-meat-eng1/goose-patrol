@@ -6,8 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * GooseMan movement (FR_BOSS),
- * The Goose Man will move at the same velocity as other geese towards a random point on the map,
- * then when it gets to a point, it changes the target point
+ * The Goose Man will move at the same velocity as other geese towards a random point on the map.
  */
 public class GooseMan implements Feedable{
 

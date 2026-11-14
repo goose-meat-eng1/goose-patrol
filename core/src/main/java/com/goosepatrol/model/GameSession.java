@@ -156,6 +156,7 @@ public class GameSession {
       if (spawner != null && geeseFed >= GameConfig.GOOSE_MAN_AFTER_GEESE) {
         gooseMan = spawner.bringGooseMan(player.getBounds(), map, geese);
         eventsTriggered++;
+        setHudMessage("Goose Man has spawned!\nFeed him and you'll be able to escape!", 5);
       }
       return;
     }

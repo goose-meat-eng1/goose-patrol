@@ -23,10 +23,8 @@ public final class GameConfig {
    */
   public static final float STUDENT_SPEED_UP_SECONDS = 0.5f;
 
-
   /** How big the student is drawn, the collision box stays the same. */
   public static final float DRAW_SCALE = 0.75f;
-
 
   /**
    * How long the student takes to stop from full speed, in seconds (FR_MOVE). Turning back sheds speed at the same
@@ -35,7 +33,7 @@ public final class GameConfig {
   public static final float STUDENT_STOP_SECONDS = 0.5f;
 
   /** The amount of stamina the player starts with. */
-  public static final float PLAYER_STAMINA = 15f;
+  public static final float PLAYER_STAMINA = 20f;
 
   /** The constant velocity the geese will approach the player. (FR_GOOSE_MOVE)*/
   public static final float GOOSE_VELOCITY = 100f;
@@ -87,7 +85,7 @@ public final class GameConfig {
   public static final float MIN_WAVE_GAP = 5f;
 
   /** The most geese on the map at once (FR_SPAWN, NFR_PERFORMANCE). */
-  public static final int MAX_GEESE = 100;
+  public static final int MAX_GEESE = 20;
 
   /** How far from the student a goose arrives, so off screen (FR_SPAWN). */
   public static final float SPAWN_DISTANCE = 360f;
@@ -105,7 +103,7 @@ public final class GameConfig {
   public static final int GOOSE_MAN_FULLNESS = 15;
 
   /** How many geese must be filled before the Goose Man arrives (FR_BOSS). */
-  public static final int GOOSE_MAN_AFTER_GEESE = 15;
+  public static final int GOOSE_MAN_AFTER_GEESE = 30;
 
   /** Scale for the map rendering. */
   public static final float MAP_SCALE = 8f;
