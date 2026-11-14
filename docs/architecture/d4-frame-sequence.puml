@@ -2,27 +2,31 @@
 
 !include style.iuml
 title Goose Patrol: D4 one frame of play
-caption v0.2.0 draft, 17 Oct 2026
+caption v0.4.0, 9 Nov 2026. GameScreen calls update(delta)
 hide footbox
 
-participant ":GameSession" as session
-participant ":GameClock" as clock
-participant ":HiddenEvent" as event
-participant ":Counters" as counters
-participant ":CueListener" as cues
+participant "GameSession" as session
+participant "GameClock" as clock
+participant "Player" as player
+participant "BreadDispenser" as dispenser
+participant "Feedable" as target
 
 [-> session : update(delta)
 opt state = PLAYING
-  session -> clock : tick(delta)
-  loop for each hidden event
-    session -> event : check(this)
-    event --> session : fired, story
-
-    opt fired
-      session -> counters : eventTriggered()
-      session -> cues : cue(story)
+  session -> session : cap frame at 0.1 s
+  session -> clock : tick(frame)
+  alt time is up
+    session -> session : state = ENDED
+  else
+    session -> player : update(...)
+    session -> session : updateGeese(...)
+    session -> session : updateGooseMan(...)
+    session -> dispenser : update(...)
+    dispenser --> session : new piece or null
+    loop each piece of bread that arrives
+      session -> target : feed()
+      target --> session : filled
     end
   end
 end
-
 @enduml

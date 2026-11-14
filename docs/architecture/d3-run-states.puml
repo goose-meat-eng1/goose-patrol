@@ -1,17 +1,38 @@
 @startuml d3-run-states
 
 !include style.iuml
-
-
 title Goose Patrol: D3 run states
-caption v0.2.0 draft, 17 Oct 2026
+caption v0.4.0, 9 Nov 2026
+
 [*] --> READY
-READY : entry / show start prompt
+READY : entry / show the start prompt
 READY --> PLAYING : start()
-PLAYING : do / count down the clock
-PLAYING --> PAUSED : togglePause()
-PAUSED : entry / show paused message
+PLAYING : do / update(delta)
+PLAYING --> PAUSED : togglePause(),\nor focus lost
+PAUSED : entry / show "Paused"
 PAUSED --> PLAYING : togglePause()
 PLAYING --> ENDED : when(timeLeft = 0)
-ENDED : entry / show end screen
+ENDED : entry / show the end screen
+@enduml
+
+@startuml d3-goose-states
+
+!include style.iuml
+title Goose Patrol: D3 goose and Goose Man states
+caption v0.4.0, 12 Nov 2026
+
+state "Goose.State" as G {
+  [*] --> CHASING
+  CHASING : do / chase\nthe student
+  CHASING --> FLYING_AWAY : feed() fills it\n/ lay an egg
+  CHASING --> FLYING_AWAY : feedMax(), when the\nGoose Man is defeated
+  FLYING_AWAY --> GONE : after 2 s
+  GONE --> [*]
+}
+
+state "GooseMan.State" as M {
+  [*] --> RUNNING : 15 geese fed
+  RUNNING : do / walk to\nrandom points
+  RUNNING --> DEFEATED : feed() fills him
+}
 @enduml
