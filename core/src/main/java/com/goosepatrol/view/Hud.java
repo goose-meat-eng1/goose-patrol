@@ -113,6 +113,7 @@ public class Hud {
     inventoryTexture.dispose();
     coffeeItemTexture.dispose();
     breadItemTexture.dispose();
+    shapeRenderer.dispose();
   }
 
   /**
