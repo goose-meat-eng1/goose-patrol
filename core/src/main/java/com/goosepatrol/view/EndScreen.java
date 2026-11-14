@@ -37,6 +37,8 @@ public class EndScreen extends ScreenAdapter {
     batch.begin();
     font.draw(batch, getEndMessage(session.getEndCondition()),
         0, viewport.getWorldHeight() / 2, viewport.getWorldWidth(), Align.center, false);
+    font.draw(batch, "Items used: " + session.getItemsUsed()+ "\nEvents triggered: " + session.getEventsTriggered(),
+        0, viewport.getWorldHeight() * .25f, viewport.getWorldWidth(), Align.center, false);
     batch.end();
   }
 
