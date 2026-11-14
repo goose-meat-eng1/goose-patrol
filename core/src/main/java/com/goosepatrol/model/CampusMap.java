@@ -3,6 +3,7 @@ package com.goosepatrol.model;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The campus the student walks on, with its size, its walls and where the student starts (FR_MAP).
@@ -17,20 +18,24 @@ public class CampusMap {
   private final List<Rectangle> deepWater;
   private final List<Rectangle> shallowWater;
 
+  /** The hidden event zones, by name (FR_EVENT_HIDDEN). */
+  private final Map<String, Rectangle> eventZones;
+
   /**
    * Makes the map. The game add CampusMapLoader.
    */
   public CampusMap(float width, float height, List<Rectangle> solids, Vector2 studentStart) {
-    this(width, height, solids, List.of(), List.of(), studentStart);
+    this(width, height, solids, List.of(), List.of(), Map.of(), studentStart);
   }
 
   public CampusMap(float width, float height, List<Rectangle> solids, List<Rectangle> deepWater,
-      List<Rectangle> shallowWater, Vector2 studentStart) {
+      List<Rectangle> shallowWater, Map<String, Rectangle> eventZones, Vector2 studentStart) {
     this.width = width;
     this.height = height;
     this.solids = List.copyOf(solids);
     this.deepWater = List.copyOf(deepWater);
     this.shallowWater = List.copyOf(shallowWater);
+    this.eventZones = Map.copyOf(eventZones);
     this.studentStart = new Vector2(studentStart);
   }
 
@@ -80,6 +85,12 @@ public class CampusMap {
 
   public Vector2 getStudentStart() {
     return new Vector2(studentStart);
+  }
+
+  /** The hidden event zone with this name, or null if the map has none (FR_EVENT_HIDDEN). */
+  public Rectangle getEventZone(String name) {
+    Rectangle zone = eventZones.get(name);
+    return zone == null ? null : new Rectangle(zone);
   }
 
 }
