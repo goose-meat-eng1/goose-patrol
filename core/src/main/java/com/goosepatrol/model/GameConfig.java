@@ -52,6 +52,15 @@ public final class GameConfig {
   /** How long a full goose flies before it is gone, in seconds (FR_FULLNESS). */
   public static final float GOOSE_FLY_SECONDS = 2f;
 
+  /** The amount of stamina the player loses when attacked by a goose. */
+  public static final float GOOSE_ATTACK_POWER = 1f;
+
+  /** The distance from which a goose can attack the player. */
+  public static final float GOOSE_ATTACK_RANGE = 20f;
+
+  /** Length of goose attack cooldown period in seconds */
+  public static final float GOOSE_ATTACK_COOLDOWN = 1.5f;
+
   /** Seconds with no geese at the start of a run (FR_SPAWN). */
   public static final float CALM_START_SECONDS = 10f;
 

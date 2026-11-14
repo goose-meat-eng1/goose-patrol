@@ -74,6 +74,11 @@ public class Player {
     return Math.max(0, boostSecondsLeft);
   }
 
+  public float reduceStamina(float amount) {
+    stamina = Math.max(0, stamina - amount);
+    return stamina;
+  }
+
   /**
    * Works out which way the student faces. With no keys held, the student keeps facing the same way. 
    */

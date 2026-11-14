@@ -130,6 +130,17 @@ public class GameSession {
         goose.feedMax();
 
       goose.update(target, geese, frame, map);
+
+      // Attack the player if the goose is in range
+      if (goose.getState() == Goose.State.CHASING) {
+        Rectangle gooseBox = goose.getBounds();
+        Vector2 gooseCenter = gooseBox.getCenter(new Vector2());
+
+        if (gooseCenter.dst(target) < GameConfig.GOOSE_ATTACK_RANGE) {
+          player.reduceStamina(GameConfig.GOOSE_ATTACK_POWER);
+          goose.startCooldown();
+        }
+      }
     }
     geese.removeIf(goose -> goose.getState() == Goose.State.GONE);
   }
